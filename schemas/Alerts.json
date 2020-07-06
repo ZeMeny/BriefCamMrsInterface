@@ -1,0 +1,494 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema",
+    "title": "JSON Schema for Alerts",
+    "id": "smart_zone",
+    "type": "object",
+    "definitions": {
+        "dateString": {
+            "type": "string",
+            "description": "Date pattern",
+            "pattern": "^(20|19)\\d{2}\\-(10|11|12|0[1-9])\\-(0[1-9]|[12]\\d|30|31)T(0[1-9]|1\\d|2[0-3]):[0-5]\\d:[0-5]\\d\\.\\d{3}Z$"
+        }
+    },
+    "properties": {
+        "alertID": {
+            "type": "string",
+            "description": "Alert identifier.",
+            "id": "/properties/alertID",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^([0-9]|[A-Z]|[a-z])+$"
+        },
+        "humanID": {
+            "type": "string",
+            "description": "The person Id number.",
+            "id": "/properties/HumanID",
+            "minLength": 0,
+            "maxLength": 15,
+            "pattern": "^$|^([0-9]|[+ -])+$"
+        },
+        "licensePlate": {
+            "type": "string",
+            "description": "License Plate identifier.",
+            "id": "/properties/licensePlate",
+            "minLength": 0,
+            "maxLength": 10,
+            "pattern": "^$|^([\u05D0-\u05EA]|[A-Z]|[a-z]|[0-9]|[+ -])+$"
+        },
+        "phoneNumber": {
+            "type": "string",
+            "description": "The detected humen phone number.",
+            "id": "/properties/phoneNumber",
+            "minLength": 0,
+            "maxLength": 15,
+            "pattern": "^$|^([0-9]|[+ -])+$"
+        },
+        "longitude": {
+            "type": "string",
+            "description": "WGS84 GEO longitude.",
+            "id": "/properties/longitude",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^([0-9]{2,}.[0-9]{1,10})+$"
+        },
+        "latitude": {
+            "type": "string",
+            "description": "WGS84 GEO latitude.",
+            "id": "/properties/latitude",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^([0-9]{2,}.[0-9]{1,10})+$"
+        },
+        "siteName": {
+            "type": "string",
+            "description": "LPR Camera position",
+            "id": "/properties/siteName",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "watchDirection": {
+            "type": "string",
+            "description": "The camera direction",
+            "id": "/properties/watchDirection",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "reason": {
+            "type": "string",
+            "description": "Reason for opening the Alert.",
+            "id": "/properties/reason",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "weaponAccessabillity": {
+            "type": "integer",
+            "description": "Is there's a weapon accessabillity",
+            "id": "/properties/weaponAccessabillity",
+            "minimum": 0,
+            "maximum": 2
+        },
+        "hativa": {
+            "type": "integer",
+            "description": "Hativa Id",
+            "id": "/properties/hativa",
+            "minimum": 0,
+            "maximum": 99999
+        },
+        "gdud": {
+            "type": "integer",
+            "description": "Gdud Id",
+            "id": "/properties/gdud",
+            "minimum": 0,
+            "maximum": 99999
+        },
+        "indicationGotInAlchInMs": {
+            "description": "The time the Alert was open",
+            "$id": "/properties/indicationGotInAlchInMs",
+            "$ref": "#/definitions/dateString"
+        },
+        "indicationSentToWolfInMs": {
+            "description": "The time the Alert was sent to Blue Wolf",
+            "$id": "/properties/indicationSentToWolfInMs",
+            "$ref": "#/definitions/dateString"
+        },
+        "alertStatus": {
+            "type": "integer",
+            "description": "alert Status",
+            "id": "/properties/alertStatus",
+            "minimum": 0,
+            "maximum": 3
+        },
+        "closeReason": {
+            "type": "string",
+            "description": "The reason for closing the Alert",
+            "id": "/properties/closeReason",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "suspectQuadName": {
+            "type": "string",
+            "description": "The suspect Quad Name.",
+            "id": "/properties/suspectQuadName",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "nameAddress": {
+            "type": "string",
+            "description": "The suspect address",
+            "id": "/properties/nameAddress",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "suspectSex": {
+            "type": "integer",
+            "description": "The suspect address",
+            "id": "/properties/nameAddress",
+            "minimum": 0,
+            "maximum": 1
+        },
+        "suspectBirthDate": {
+            "description": "The suspect Birth Date",
+            "$id": "/properties/suspectBirthDate",
+            "$ref": "#/definitions/dateString"
+        },
+        "suspectAge": {
+            "type": "integer",
+            "description": "The suspect age",
+            "id": "/properties/suspectAge",
+            "minimum": 0,
+            "maximum": 200
+        },
+        "suspectIndication": {
+            "type": "integer",
+            "description": "The indication of the suspect",
+            "id": "/properties/suspectIndication",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "suspectPermits": {
+            "type": "array",
+            "description": "A list of all the permits of the suspect",
+            "id": "/properties/suspectPermits",
+            "items": {
+                "type": "string",
+                "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-*])+$",
+                "minLength": 0,
+                "maxLength": 50
+            },
+            "maxItems": 50
+        },
+        "suspectPrevents": {
+            "type": "array",
+            "description": "A list of all the prevents of the suspect",
+            "id": "/properties/suspectPrevents",
+            "items": {
+                "type": "string",
+                "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$",
+                "minLength": 0,
+                "maxLength": 50
+            },
+            "maxItems": 50
+        },
+        "message": {
+            "type": "string",
+            "description": "message",
+            "id": "/properties/message",
+            "minLength": 0,
+            "maxLength": 5000,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "groupIds": {
+            "type": "array",
+            "description": "The destinations groups to receive the message",
+            "id": "/properties/groupIds",
+            "items": {
+                "type": "string",
+                "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$",
+                "minLength": 0,
+                "maxLength": 100
+            },
+            "maxItems": 50
+        },
+        "alertType": {
+            "type": "integer",
+            "description": "The Alert types",
+            "id": "/properties/alertType",
+            "minimum": 0,
+            "maximum": 5
+        },
+        "alertSubType": {
+            "type": "string",
+            "description": "The Alert sub type",
+            "id": "/properties/alertSubType",
+            "minLength": 0,
+            "maxLength": 500,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "alertText": {
+            "type": "string",
+            "description": "The Alert essence",
+            "id": "/properties/alertText",
+            "minLength": 0,
+            "maxLength": 500,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "alertReality": {
+            "type": "integer",
+            "description": "Reality",
+            "id": "/properties/alertReality",
+            "minimum": 1,
+            "maximum": 2
+        },
+        "alertRelevanceTime": {
+            "type": "integer",
+            "description": "The Alert relevance time",
+            "id": "/properties/alertRelevanceTime",
+            "minimum": 0,
+            "maximum": 1000000
+        },
+        "alertObject": {
+            "type": "integer",
+            "description": "Object Type",
+            "id": "/properties/alertObject",
+            "minimum": 1,
+            "maximum": 3
+        },
+        "alertSeverity": {
+            "type": "integer",
+            "description": "Severity",
+            "id": "/properties/alertSeverity",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "systemAlertTime": {
+            "$id": "/properties/systemAlertTime",
+            "description": "The system creation time of the Alert",
+            "$ref": "#/definitions/dateString"
+        },
+        "sensorAlertTime": {
+            "description": "The sensor creation time of the Alert",
+            "$id": "/properties/sensorAlertTime",
+            "$ref": "#/definitions/dateString"
+        },
+        "sensorID": {
+            "type": "string",
+            "description": "The sensor ID",
+            "id": "/properties/sensorID",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "sensorName": {
+            "type": "string",
+            "description": "The sensor Name",
+            "id": "/properties/sensorName",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "sensorType": {
+            "type": "integer",
+            "description": "The sensor Type",
+            "id": "/properties/sensorType",
+            "minimum": 1,
+            "maximum": 4
+        },
+        "licenseType": {
+            "type": "integer",
+            "description": "The license Type",
+            "id": "/properties/licenseType",
+            "minimum": 1,
+            "maximum": 6
+        },
+        "carType": {
+            "type": "integer",
+            "description": "The car Type",
+            "id": "/properties/carType",
+            "minimum": 1,
+            "maximum": 7
+        },
+        "carMakerName": {
+            "type": "string",
+            "description": "The car maker name",
+            "id": "/properties/carMakerName",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "carBrandName": {
+            "type": "string",
+            "description": "The car brand name",
+            "id": "/properties/carBrandName",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "carColorName": {
+            "type": "string",
+            "description": "The car color name",
+            "id": "/properties/carColorName",
+            "minLength": 0,
+            "maxLength": 50,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "evidenceSquare": {
+            "type": "string",
+            "description": "The evidence square",
+            "id": "/properties/evidenceSquare",
+            "minLength": 0,
+            "maxLength": 100,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "loiteringTime": {
+            "type": "integer",
+            "description": "The loitering time in seconds",
+            "id": "/properties/loiteringTime",
+            "minimum": 0,
+            "maximum": 10000000
+        },
+        "ruleDescription": {
+            "type": "string",
+            "description": "Rule Description",
+            "id": "/properties/ruleDescription",
+            "minLength": 0,
+            "maxLength": 1000,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "confidence": {
+            "type": "integer",
+            "description": "The confidence level percentage",
+            "id": "/properties/confidence",
+            "minimum": 0,
+            "maximum": 100
+        },
+        "speed": {
+            "type": "integer",
+            "description": "Speed (KPH).",
+            "id": "/properties/speed",
+            "minimum": 0,
+            "maximum": 300
+        },
+        "alertDescription": {
+            "type": "string",
+            "description": "The Alert Description.",
+            "id": "/properties/alertDescription",
+            "minLength": 0,
+            "maxLength": 1000,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "evidences": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "evidenceId": {
+                        "type": "string",
+                        "description": "The evidence Id.",
+                        "id": "/properties/evidenceId",
+                        "minLength": 0,
+                        "maxLength": 1000,
+                        "pattern": "^$|^([א-ת]|[׳-״]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+                    },
+                    "evidenceType": {
+                        "type": "integer",
+                        "description": "The evidence type.",
+                        "id": "/properties/evidenceType",
+                        "minimum": 1,
+                        "maximum": 2
+                    },
+                    "evidenceLocalTime": {
+                        "description": "The evidence creation time",
+                        "$id": "/properties/evidenceLocalTime",
+                        "$ref": "#/definitions/dateString"
+                    },
+                    "evidenceLocalLong": {
+                        "type": "string",
+                        "description": "WGS84 GEO evidence longitude.",
+                        "id": "/properties/evidenceLocalLong",
+                        "minLength": 0,
+                        "maxLength": 50,
+                        "pattern": "^([0-9]{2,}.[0-9]{1,10})+$"
+                    },
+                    "evidenceLocalLat": {
+                        "type": "string",
+                        "description": "WGS84 GEO evidence longitude.",
+                        "id": "/properties/evidenceLocalLat",
+                        "minLength": 0,
+                        "maxLength": 50,
+                        "pattern": "^([0-9]{2,}.[0-9]{1,10})+$"
+                    }
+                },
+                "additionalProperties": false
+            },
+            "maxItems": 50
+        },
+        "distributionTime": {
+            "$id": "/properties/distributionTime",
+            "description": "The queues distribution time",
+            "$ref": "#/definitions/dateString"
+        },
+        "sourceSystem": {
+            "type": "string",
+            "description": "The Source System.",
+            "id": "/properties/sourceSystem",
+            "minLength": 0,
+            "maxLength": 200,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "analyticAlertTimeout": {
+            "type": "integer",
+            "description": "Analytical Alert Timeout.",
+            "id": "/properties/analyticAlertTimeout",
+            "minimum": 0,
+            "maximum": 1000000
+        },
+        "collateID": {
+            "type": "string",
+            "description": "The Collate ID.",
+            "id": "/properties/collateID",
+            "minLength": 0,
+            "maxLength": 30,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "sensorGroupID": {
+            "type": "string",
+            "description": "The Sensor Group ID.",
+            "id": "/properties/sensorGroupID",
+            "minLength": 0,
+            "maxLength": 200,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "sensorGroupName": {
+            "type": "string",
+            "description": "The Sensor Group Name.",
+            "id": "/properties/sensorGroupName",
+            "minLength": 0,
+            "maxLength": 200,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "suspectGroup": {
+            "type": "string",
+            "description": "The Suspect Group.",
+            "id": "/properties/suspectGroup",
+            "minLength": 0,
+            "maxLength": 200,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        },
+        "coordinates": {
+            "type": "string",
+            "description": "The Coordinates.",
+            "id": "/properties/coordinates",
+            "minLength": 0,
+            "maxLength": 200,
+            "pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$"
+        }
+    },
+    "additionalProperties": false,
+    "required": ["alertID", "alertType", "alertStatus", "siteName", "systemAlertTime", "sensorAlertTime", "sensorID", "sensorName", "longitude", "latitude", "distributionTime"]
+}

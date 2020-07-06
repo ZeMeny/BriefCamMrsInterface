@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<DeviceStatusReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" MessageType="Undefined" ProtocolVersion="Undefined">
+  <DeviceIdentification xmlns="urn:SNSR_STD">
+    <DeviceName>BriefCamDevice</DeviceName>
+    <DeviceType>Device Hub</DeviceType>
+  </DeviceIdentification>
+  <DeviceStatusReport MessageType="Undefined" ProtocolVersion="Undefined" xmlns="urn:SNSR_STD">
+    <DeviceIdentification>
+      <DeviceName>Cam13-5.20.17</DeviceName>
+      <DeviceType>Radar</DeviceType>
+    </DeviceIdentification>
+    <SensorStatusReport>
+      <SensorIdentification>
+        <SensorName>Antenna</SensorName>
+        <SensorType>Antenna</SensorType>
+      </SensorIdentification>
+      <SensorTechnicalState>OK</SensorTechnicalState>
+      <CommunicationState>OK</CommunicationState>
+      <PowerState>Yes</PowerState>
+      <SensorMode>Normal</SensorMode>
+      <AntennaStatus>
+        <Sector>
+          <AzimuthStart Units="Mils">0</AzimuthStart>
+          <AzimuthEnd Units="Mils">533</AzimuthEnd>
+          <Center>
+            <LocationType>
+              <GeodeticLocation Datum="Undefined">
+                <Latitude Units="Decimal Degrees">35.1621</Latitude>
+                <Longitude Units="Decimal Degrees">32.1033</Longitude>
+              </GeodeticLocation>
+            </LocationType>
+          </Center>
+          <MinRange Units="Meters">10</MinRange>
+          <MaxRange Units="Meters">100</MaxRange>
+        </Sector>
+      </AntennaStatus>
+    </SensorStatusReport>
+  </DeviceStatusReport>
+  <DeviceStatusReport MessageType="Undefined" ProtocolVersion="Undefined" xmlns="urn:SNSR_STD">
+    <DeviceIdentification>
+      <DeviceName>Cam14-5.20.18</DeviceName>
+      <DeviceType>Radar</DeviceType>
+    </DeviceIdentification>
+    <SensorStatusReport>
+      <SensorIdentification>
+        <SensorName>Antenna</SensorName>
+        <SensorType>Antenna</SensorType>
+      </SensorIdentification>
+      <SensorTechnicalState>OK</SensorTechnicalState>
+      <CommunicationState>OK</CommunicationState>
+      <PowerState>Yes</PowerState>
+      <SensorMode>Normal</SensorMode>
+      <AntennaStatus>
+        <Sector>
+          <AzimuthStart Units="Mils">0</AzimuthStart>
+          <AzimuthEnd Units="Mils">533</AzimuthEnd>
+          <Center>
+            <LocationType>
+              <GeodeticLocation Datum="Undefined">
+                <Latitude Units="Decimal Degrees">35.1622</Latitude>
+                <Longitude Units="Decimal Degrees">32.1033</Longitude>
+              </GeodeticLocation>
+            </LocationType>
+          </Center>
+          <MinRange Units="Meters">10</MinRange>
+          <MaxRange Units="Meters">100</MaxRange>
+        </Sector>
+      </AntennaStatus>
+    </SensorStatusReport>
+  </DeviceStatusReport>
+</DeviceStatusReport>

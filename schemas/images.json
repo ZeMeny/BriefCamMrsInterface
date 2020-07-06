@@ -1,0 +1,75 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema",
+	"title": "JSON schema for images",
+	"type": "object",
+	"definitions": {
+		"dateString": {
+			"type": "string",
+			"description": "Date pattern",
+			"pattern": "^((20|19)\\d{2}\\-(10|11|12|0[1-9])\\-(0[1-9]|[12]\\d|30|31)T(0[1-9]|1\\d|2[0-3]):[0-5]\\d\\.\\d{3}Z)$"
+		}
+	},
+	"properties": {
+		"alertID": {
+			"type": "string",
+			"description": "Alert identifier.",
+			"id": "/properties/alertID",
+			"minLength": 1,
+			"maxLength": 50,
+			"pattern": "^([0-9]|[A-Z]|[a-z]|[\\-])+$"
+		},
+		"image1": {
+			"type": "string",
+			"description": "first image",
+			"id": "/properties/image1",
+			"contentMediaType": "image/jpeg",
+			"contentEncoding": "base64"
+		},
+		"image2": {
+			"type": "string",
+			"description": "second image",
+			"id": "/properties/image2",
+			"contentMediaType": "image/jpeg",
+			"contentEncoding": "base64"
+		},
+		"image3": {
+			"type": "string",
+			"description": "third image",
+			"id": "/properties/image3",
+			"contentMediaType": "image/jpeg",
+			"contentEncoding": "base64"
+		},
+		"distributionTime": {			
+			"description": "The queues distribution time",			
+			"$ref": "#/definitions/dateString"
+		},
+		"groupIds": {
+		  "type": "array",
+		  "description": "The destinations groups to receive the message",
+		  "id": "/properties/groupIds",
+		  "items": {
+			"type": "string",
+			"pattern": "^$|^([\u05D0-\u05EA]|[\u05F3-\u05F4]|[A-Z]|[a-z]|[0-9]|[ \\-_])+$",
+			"minLength": 0,
+			"maxLength": 100
+		  },
+		  "maxItems": 15
+		},
+		"videoClip": {
+			"type": "string",
+			"description": "video clip of alert",
+			"id": "/properties/videoClip",
+			"contentMediaType": "video/mp4",
+			"contentEncoding": "base64"
+		},
+		"audioClip": {
+			"type": "string",
+			"description": "audio clip of alert",
+			"id": "/properties/audioClip",
+			"contentMediaType": "audio/mp4",
+			"contentEncoding": "base64"
+		}
+	},
+	"additionalProperties": false,
+	"required": [ "alertID", "image1", "distributionTime" ]
+}

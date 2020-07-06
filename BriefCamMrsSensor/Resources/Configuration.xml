@@ -1,0 +1,107 @@
+<?xml version="1.0"?>
+<DeviceConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ProtocolVersion="Undefined">
+  <DeviceIdentification xmlns="urn:SNSR_STD">
+    <DeviceName>BriefCamDevice</DeviceName>
+    <DeviceType>Device Hub</DeviceType>
+  </DeviceIdentification>
+  <NotificationServiceIPAddress xmlns="urn:SNSR_STD">127.0.0.1</NotificationServiceIPAddress>
+  <NotificationServicePort xmlns="urn:SNSR_STD">13001</NotificationServicePort>
+  <DeviceConfiguration ProtocolVersion="Undefined" xmlns="urn:SNSR_STD">
+    <DeviceIdentification>
+      <DeviceName>Cam13-5.20.17</DeviceName>
+      <DeviceType>Radar</DeviceType>
+    </DeviceIdentification>
+    <NotificationServiceIPAddress>127.0.0.1</NotificationServiceIPAddress>
+    <NotificationServicePort>13001</NotificationServicePort>
+    <LocationType>
+      <GeodeticLocation Datum="Undefined">
+        <Latitude Units="Decimal Degrees">35.1621</Latitude>
+        <Longitude Units="Decimal Degrees">32.1033</Longitude>
+      </GeodeticLocation>
+    </LocationType>
+    <SensorConfiguration>
+      <SensorIdentification>
+        <SensorName>Antenna</SensorName>
+        <SensorType>Antenna</SensorType>
+      </SensorIdentification>
+      <AntennaConfiguration>
+        <MechanicalScanningSupported>false</MechanicalScanningSupported>
+        <HorizontalVelocityRange>
+          <Min Units="MilsPerSecond">0</Min>
+          <Max Units="MilsPerSecond">100</Max>
+        </HorizontalVelocityRange>
+        <VerticalVelocityRange>
+          <Min Units="MilsPerSecond">0</Min>
+          <Max Units="MilsPerSecond">100</Max>
+        </VerticalVelocityRange>
+        <AzimuthRange>
+          <Min Units="Mils">0</Min>
+          <Max Units="Mils">533</Max>
+        </AzimuthRange>
+        <ElevationAngleRange>
+          <Min Units="Mils">0</Min>
+          <Max Units="Mils">1600</Max>
+        </ElevationAngleRange>
+        <RangeRange>
+          <Min>10</Min>
+          <Max>100</Max>
+        </RangeRange>
+        <AntennaCommandConfiguration>
+          <SimpleCommand>KeepAlive</SimpleCommand>
+          <Operation>Undefined</Operation>
+          <Control>Undefined</Control>
+        </AntennaCommandConfiguration>
+      </AntennaConfiguration>
+      <SimpleCommandConfiguration>KeepAlive</SimpleCommandConfiguration>
+    </SensorConfiguration>
+  </DeviceConfiguration>
+  <DeviceConfiguration ProtocolVersion="Undefined" xmlns="urn:SNSR_STD">
+    <DeviceIdentification>
+      <DeviceName>Cam14-5.20.18</DeviceName>
+      <DeviceType>Radar</DeviceType>
+    </DeviceIdentification>
+    <NotificationServiceIPAddress>127.0.0.1</NotificationServiceIPAddress>
+    <NotificationServicePort>13001</NotificationServicePort>
+    <LocationType>
+      <GeodeticLocation Datum="Undefined">
+        <Latitude Units="Decimal Degrees">35.1622</Latitude>
+        <Longitude Units="Decimal Degrees">32.1033</Longitude>
+      </GeodeticLocation>
+    </LocationType>
+    <SensorConfiguration>
+      <SensorIdentification>
+        <SensorName>Antenna</SensorName>
+        <SensorType>Antenna</SensorType>
+      </SensorIdentification>
+      <AntennaConfiguration>
+        <MechanicalScanningSupported>false</MechanicalScanningSupported>
+        <HorizontalVelocityRange>
+          <Min Units="MilsPerSecond">0</Min>
+          <Max Units="MilsPerSecond">100</Max>
+        </HorizontalVelocityRange>
+        <VerticalVelocityRange>
+          <Min Units="MilsPerSecond">0</Min>
+          <Max Units="MilsPerSecond">100</Max>
+        </VerticalVelocityRange>
+        <AzimuthRange>
+          <Min Units="Mils">0</Min>
+          <Max Units="Mils">533</Max>
+        </AzimuthRange>
+        <ElevationAngleRange>
+          <Min Units="Mils">0</Min>
+          <Max Units="Mils">1600</Max>
+        </ElevationAngleRange>
+        <RangeRange>
+          <Min>10</Min>
+          <Max>100</Max>
+        </RangeRange>
+        <AntennaCommandConfiguration>
+          <SimpleCommand>KeepAlive</SimpleCommand>
+          <Operation>Undefined</Operation>
+          <Control>Undefined</Control>
+        </AntennaCommandConfiguration>
+      </AntennaConfiguration>
+      <SimpleCommandConfiguration>KeepAlive</SimpleCommandConfiguration>
+    </SensorConfiguration>
+  </DeviceConfiguration>
+</DeviceConfiguration>
