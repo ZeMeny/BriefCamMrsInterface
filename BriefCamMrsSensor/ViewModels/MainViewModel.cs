@@ -5,6 +5,7 @@ using BriefCamMrsSensor.Views;
 using log4net;
 using MarsSensor;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -14,8 +15,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 using SensorStandard;
 using SensorStandard.MrsTypes;
+using File = System.IO.File;
+using Point = SensorStandard.MrsTypes.Point;
 
 namespace BriefCamMrsSensor.ViewModels
 {
@@ -34,6 +38,9 @@ namespace BriefCamMrsSensor.ViewModels
         private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
         private BreifCamClient _breifCamClient;
         private readonly Sensor _sensor = Sensor.Instance;
+        private readonly Dictionary<string, Point> _alertLocations = new Dictionary<string, Point>();
+        private readonly BriefcamSimulator _simulator = new BriefcamSimulator(TimeSpan.FromSeconds(5), 34.5, 32.5);
+        private bool _isSimActive;
 
         #endregion
 
@@ -42,10 +49,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         public bool IsThinking
         {
-            get
-            {
-                return _isThinking;
-            }
+            get => _isThinking;
             set
             {
                 _isThinking = value;
@@ -55,10 +59,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         public string RemoteServerAddress
         {
-            get
-            {
-                return _remoteServerAddress;
-            }
+            get => _remoteServerAddress;
             set
             {
                 _remoteServerAddress = value;
@@ -68,10 +69,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         public string SensorIP
         {
-            get
-            {
-                return _sensorIp;
-            }
+            get => _sensorIp;
             set
             {
                 _sensorIp = value;
@@ -81,10 +79,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         public int SensorPort
         {
-            get
-            {
-                return _sensorPort;
-            }
+            get => _sensorPort;
             set
             {
                 _sensorPort = value;
@@ -98,10 +93,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         public bool ShowStatusReports
         {
-            get
-            {
-                return _showStatusReports;
-            }
+            get => _showStatusReports;
             set
             {
                 _showStatusReports = value;
@@ -111,18 +103,26 @@ namespace BriefCamMrsSensor.ViewModels
 
         public bool ValidateMessages
         {
-            get
-            {
-                return _validate;
-            }
+            get => _validate;
             set
             {
                 _validate = value;
+                _sensor.ValidateMessages = value;
                 OnPropertyChanged(nameof(ValidateMessages));
             }
         }
 
         public int MaximumLogItems { get; } = Settings.Default.MaxLogItems;
+
+        public bool IsSimActive
+        {
+            get => _isSimActive;
+            set
+            {
+                _isSimActive = value;
+                OnPropertyChanged(nameof(IsSimActive));
+            }
+        }
 
         #endregion
 
@@ -137,6 +137,8 @@ namespace BriefCamMrsSensor.ViewModels
         public ICommand StopSensorCommand { get; set; }
         public ICommand ClearBriefCamLogCommand { get; set; }
         public ICommand ClearSensorLogCommand { get; set; }
+        public ICommand StartSimCommand { get; set; }
+        public ICommand StopSimCommand { get; set; }
 
         #endregion
 
@@ -184,9 +186,38 @@ namespace BriefCamMrsSensor.ViewModels
         {
             _sensorAction = () =>
             {
-                _sensor.OpenWebService(MrsBriefCamHelper.CreateDefaultConfig(SensorIP, SensorPort),
-                    MrsBriefCamHelper.CreateDefaultStatus());
                 IsThinking = true;
+                var configuration = MrsBriefCamHelper.CreateDefaultConfig(SensorIP, SensorPort);
+                var status = MrsBriefCamHelper.CreateDefaultStatus();
+
+                string path = AppDomain.CurrentDomain.BaseDirectory + "Configuration.xml";
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        configuration = MrsMessage.Load<DeviceConfiguration>(File.ReadAllText(path));
+                        configuration.NotificationServiceIPAddress = SensorIP;
+                        configuration.NotificationServicePort = SensorPort.ToString();
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteSensorLog("Error Loading Configuration", ex, true);
+                    }
+                }
+
+                path = AppDomain.CurrentDomain.BaseDirectory + "StatusReport.xml";
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        status = MrsMessage.Load<DeviceStatusReport>(File.ReadAllText(path));
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteSensorLog("Error Loading Status Report", ex, true);
+                    }
+                }
+                _sensor.OpenWebService(configuration, status);
             };
             _sensorAction.BeginInvoke(SensorCallback, null);
         }
@@ -204,17 +235,22 @@ namespace BriefCamMrsSensor.ViewModels
             Settings.Default.ValidateMessages = ValidateMessages;
             Settings.Default.Save();
 
-            /*** TEMP! create first xml files ***/
-            using (FileStream stream = new FileStream("Configuration.xml", FileMode.Create))
+            if (_sensor.DeviceConfiguration != null && !File.Exists("Configuration.xml"))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(DeviceConfiguration));
-                serializer.Serialize(stream, _sensor.DeviceConfiguration);
+                using (FileStream stream = new FileStream("Configuration.xml", FileMode.Create))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(DeviceConfiguration));
+                    serializer.Serialize(stream, _sensor.DeviceConfiguration);
+                }
             }
 
-            using (FileStream stream = new FileStream("StatusReport.xml", FileMode.Create))
+            if (_sensor.StatusReport != null && !File.Exists("StatusReport.xml"))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(DeviceStatusReport));
-                serializer.Serialize(stream, _sensor.StatusReport);
+                using (FileStream stream = new FileStream("StatusReport.xml", FileMode.Create))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(DeviceStatusReport));
+                    serializer.Serialize(stream, _sensor.StatusReport);
+                }
             }
         }
 
@@ -232,6 +268,11 @@ namespace BriefCamMrsSensor.ViewModels
                         {
                             _logger.Error("BriefCam Failed to Connect, Unknown Error");
                             WriteBriefCamLog("BriefCam Failed to Connect");
+                        }
+                        else
+                        {
+                            _logger.Info("BriefCam Connected");
+                            WriteBriefCamLog("BriefCam Connected");
                         }
                     }
                     catch (Exception ex)
@@ -257,10 +298,15 @@ namespace BriefCamMrsSensor.ViewModels
                     try
                     {
                         caller?.EndInvoke(res);
-                        if (_sensor.IsOpen == false)
+                        if (_sensor.IsOpen)
+                        {
+                            _logger.Info("Sensor Web Service Opened");
+                            WriteSensorLog("Web Service Opened on " + _sensor.ServerAddress);
+                        }
+                        else
                         {
                             _logger.Error("Failed to open sensor web service, unknown error");
-                            WriteSensorLog("Failed to open sensor web service", isAlarm:true);
+                            WriteSensorLog("Failed to open sensor web service", isAlarm: true);
                         }
                     }
                     catch (Exception ex)
@@ -370,16 +416,26 @@ namespace BriefCamMrsSensor.ViewModels
 
         private void BreifCamClient_ImageReceived(object sender, BriefCamInterface.DataTypes.Image e)
         {
-            _sensor.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e));
-            _logger.Info("BriefCam Client: Image Received");
-            WriteBriefCamLog("Image Received", e);
+            if (_alertLocations.ContainsKey(e.AlertID))
+            {
+                var location = _alertLocations[e.AlertID];
+                _sensor.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, location));
+                _logger.Info("BriefCam Client: Image Received");
+                WriteBriefCamLog("Image Received", e.ToJson());
+            }
+            else
+            {
+                _logger.Warn("BriefCam Client: Image ignored, Unknown Image ID");
+                WriteBriefCamLog("Image ignored, Unknown Image ID", e.ToJson());
+            }
         }
 
         private void BreifCamClient_AlertReceived(object sender, BriefCamInterface.DataTypes.Alert e)
         {
             _sensor.SendIndicationReport(MrsBriefCamHelper.ConvertAlert(e));
+            _alertLocations.Add(e.AlertID, MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude));
             _logger.Warn("BriefCam Client: Alert Received");
-            WriteBriefCamLog("Alert Received", e, true);
+            WriteBriefCamLog("Alert Received", e.ToJson(), true);
         }
 
         private void BreifCamClient_Closed(object sender, EventArgs e)
@@ -423,6 +479,39 @@ namespace BriefCamMrsSensor.ViewModels
             WriteSensorLog($"{messageType} Received", message.ToXml());
         }
 
+        private void Simulator_Image(object sender, BriefCamInterface.DataTypes.Image e)
+        {
+            if (_alertLocations.ContainsKey(e.AlertID))
+            {
+                var location = _alertLocations[e.AlertID];
+                _sensor.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, location));
+                WriteBriefCamLog("Simulator: Image Received", e.ToJson());
+            }
+            else
+            {
+                WriteBriefCamLog("Simulator: Image ignored, Unknown Image ID", e.ToJson());
+            }
+        }
+
+        private void Simulator_Alert(object sender, BriefCamInterface.DataTypes.Alert e)
+        {
+            _sensor.SendIndicationReport(MrsBriefCamHelper.ConvertAlert(e));
+            _alertLocations.Add(e.AlertID, MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude));
+            WriteBriefCamLog("Simulator: Alert Received", e.ToJson(), true);
+        }
+
+        private void StopSimulator()
+        {
+            _simulator.Stop();
+            IsSimActive = _simulator.IsActive;
+        }
+
+        private void StartSimulator()
+        {
+            _simulator.Start();
+            IsSimActive = _simulator.IsActive;
+        }
+
         #endregion
 
 
@@ -438,6 +527,8 @@ namespace BriefCamMrsSensor.ViewModels
             StopSensorCommand = new Command(StopSensor);
             ClearBriefCamLogCommand = new Command(ClearBreifCamLog);
             ClearSensorLogCommand = new Command(ClearSensorLog);
+            StartSimCommand = new Command(StartSimulator);
+            StopSimCommand = new Command(StopSimulator);
 
             BriefCamLogItems = new ObservableCollection<ListViewItem>();
             SensorLogItems = new ObservableCollection<ListViewItem>();
@@ -445,6 +536,9 @@ namespace BriefCamMrsSensor.ViewModels
             _sensor.MessageReceived += Sensor_MessageReceived;
             _sensor.MessageSent += Sensor_MessageSent;
             _sensor.ValidationErrorOccured += Sensor_ValidationErrorOccured;
+
+            _simulator.Alert += Simulator_Alert;
+            _simulator.Image += Simulator_Image;
         }
 
         #endregion

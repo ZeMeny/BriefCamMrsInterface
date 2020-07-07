@@ -82,5 +82,17 @@ namespace BriefCamMrsSensor.Properties {
                 this["ValidateMessages"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int AlertsLocationCap {
+            get {
+                return ((int)(this["AlertsLocationCap"]));
+            }
+            set {
+                this["AlertsLocationCap"] = value;
+            }
+        }
     }
 }

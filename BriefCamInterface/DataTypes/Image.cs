@@ -6,18 +6,14 @@ namespace BriefCamInterface.DataTypes
     {
         public string AlertID { get; set; }
 
-        public string Image1 { get; set; } // base64
+        public byte[] Image1 { get; set; } // base64
 
-        public string Image2 { get; set; } // base64
+        public byte[] Image2 { get; set; } // base64
         
-        public string Image3 { get; set; } // base64
+        public byte[] Image3 { get; set; } // base64
 
-        public string VideoClip { get; set; } // base64
+        public byte[] VideoClip { get; set; } // base64
 
         public DateTime DistributionTime { get; set; }
-
-        public string[] GroupIDs { get; set; }
-
-
     }
 }

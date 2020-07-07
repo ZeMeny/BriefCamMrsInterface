@@ -1,11 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 using BriefCamInterface.DataTypes;
+using Newtonsoft.Json;
 using SensorStandard.MrsTypes;
 
 namespace BriefCamMrsSensor.Models
 {
     public static class MrsBriefCamHelper
     {
+
+        public static string ToJson<T>(this T obj) where T : new()
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
+
+        public static Point CreateMrsPoint(double lat, double lon)
+        {
+            return new Point
+            {
+                Item = new LocationType
+                {
+                    Item = new GeodeticLocation
+                    {
+                        Latitude = new Latitude
+                        {
+                            Units = LatLonUnitsType.DecimalDegrees,
+                            Value = lat
+                        },
+                        Longitude = new Longitude
+                        {
+                            Units = LatLonUnitsType.DecimalDegrees,
+                            Value = lon
+                        }
+                    }
+                }
+            };
+        }
+
+
         private static readonly DeviceIdentificationType deviceIdentification = new DeviceIdentificationType
         {
             DeviceName = "VideoAnalyticDevice",
@@ -14,8 +47,8 @@ namespace BriefCamMrsSensor.Models
 
         private static readonly SensorIdentificationType sensorIdentification = new SensorIdentificationType
         {
-            SensorName = "VideoAnalyticSensor",
-            SensorType = SensorTypeType.VideoFusion // todo: sensor type???
+            SensorName = "VideoAnalyticCamera",
+            SensorType = SensorTypeType.VideoAnalyticCamera
         };
 
         public static IndicationType ConvertAlert(Alert alert)
@@ -37,7 +70,11 @@ namespace BriefCamMrsSensor.Models
                         Address = alert.NameAddress,
                         Name = alert.SuspectQuadName,
                         Age = alert.SuspectAge.ToString(),
-                        BirthDate = alert.SuspectBirthDate.ToString("O"),
+                        BirthDate = new TimeType
+                        {
+                            Zone = TimezoneType.GMT,
+                            Value = alert.SuspectBirthDate
+                        },
                         GenderSpecified = true,
                         Gender = alert.SuspectSex == GenderTypes.Famale ? GenderType.Female : GenderType.Male,
                         PhoneNumber = alert.PhoneNumber,
@@ -75,25 +112,22 @@ namespace BriefCamMrsSensor.Models
                     RuleDescription = alert.RuleDescription,
                     SeverityLevelSpecified = true,
                     SeverityLevel = ConverSeverityLevels(alert.AlertSeverity),
-                    coordinates = alert.Coordinates,
-                    analyticAlertTimeout = alert.AnalyticAlertTimeout.ToString(),
-                    distributionTime = new TimeType
+                    AnalyticAlertTimeout = alert.AnalyticAlertTimeout.ToString(),
+                    DistributionTime = new TimeType
                     {
                         Zone = TimezoneType.GMT,
                         Value = alert.DistributionTime
                     },
-                    confidence = new Percent
+                    Confidence = new Percent
                     {
                         Units = PercentUnitsType.Percent,
                         Value = alert.Confidence
                     },
-                    collateID = alert.CollateID,
-                    evidenceSquare = alert.EvidenceSquare,
-                    sensorGroupID = alert.SensorGroupID,
+                    CollateID = alert.CollateID,
+                    EvidenceSquare = alert.EvidenceSquare,
+                    SiteID = alert.SensorGroupID,
                     StallTime = alert.LoiteringTime.ToString(),
-                    sourceSystem = alert.SourceSystem,
-                    sensorGroupName = alert.SensorGroupName,
-                    suspectGroup = alert.SuspectGroup,
+                    SourceSystem = alert.SourceSystem,
                     DetectionTypeSpecified = true,
                     DetectionType = ConvertDetectionType(alert.AlertObject),
                     VehicleIdentification = new VehicleIdentification
@@ -107,11 +141,11 @@ namespace BriefCamMrsSensor.Models
                         LicenseTypeSpecified = true,
                         LicenseType = ConvertLicenseType(alert.LicenseType),
                         VehicleModelName = alert.CarBrandName,
-                        // todo: color
+                        Color = alert.CarColorName
                     },
                     SystemIdentification = new SystemIdentification
                     {
-                        sensorAlertTime = new TimeType
+                        SensorAlertTime = new TimeType
                         {
                             Zone = TimezoneType.GMT,
                             Value = alert.SensorAlertTime
@@ -120,34 +154,89 @@ namespace BriefCamMrsSensor.Models
                         CameraName = alert.SensorName,
                         LocationName = alert.SiteName,
                         WatchDirection = alert.WatchDirection,
-                        systemAlertTime = new TimeType
+                        SystemAlertTime = new TimeType
                         {
                             Zone = TimezoneType.GMT,
                             Value = alert.SensorAlertTime
                         },
                         SystemType = ConvertSensorType(alert.SensorType)
                     },
-                    evidences = new []
+                    Evidences = new []
                     {
-                        new evidences
+                        new Evidences
                         {
-                            evidenceId = alert.EvidenceID,
-                            evidenceLocalTime = new TimeType
+                            EvidenceId = alert.EvidenceID,
+                            EvidenceLocalTime = new TimeType
                             {
                                 Zone = TimezoneType.GMT,
                                 Value = alert.EvidenceLocalTime
                             },
-                            evidenceLocation = CreateMrsPoint(alert.EvidenceLocalLat, alert.EvidenceLocalLong),
-                            evidenceType = alert.EvidenceType
+                            EvidenceLocation = CreateMrsPoint(alert.EvidenceLocalLat, alert.EvidenceLocalLong),
+                            EvidenceType = alert.EvidenceType
                         }
                     }
                 }
             };
         }
 
-        public static IndicationType ConvertImage(Image image)
+        public static IndicationType ConvertImage(Image image, Point location)
         {
-            throw new NotImplementedException();
+            List<File> imageFiles = new List<File>();
+            if (image.Image1 != null)
+            {
+                imageFiles.Add(new File
+                {
+                    File1 = image.Image1,
+                    ItemElementName = ItemChoiceType3.NameJPEG,
+                    Item = "NameJPEG"
+                });
+            }
+            if (image.Image2 != null)
+            {
+                imageFiles.Add(new File
+                {
+                    File1 = image.Image2,
+                    ItemElementName = ItemChoiceType3.NameJPEG,
+                    Item = "NameJPEG"
+                });
+            }
+            if (image.Image3 != null)
+            {
+                imageFiles.Add(new File
+                {
+                    File1 = image.Image3,
+                    ItemElementName = ItemChoiceType3.NameJPEG,
+                    Item = "NameJPEG"
+                });
+            }
+
+            List<File> videoFiles = new List<File>();
+            if (image.VideoClip != null)
+            {
+                videoFiles.Add(new File
+                {
+                    File1 = image.Image3,
+                    ItemElementName = ItemChoiceType3.NameJPEG,
+                    Item = "NameJPEG"
+                });
+            }
+            var detection = new VideoAnalyticDetectionType
+            {
+                Location = location,
+                Picture = imageFiles.Count > 0 ?  imageFiles.ToArray() : null,
+                Video = videoFiles.Count > 0 ? videoFiles.ToArray() : null
+            };
+            var indication = new IndicationType
+            {
+                CreationTime = new TimeType
+                {
+                    Zone = TimezoneType.GMT,
+                    Value = DateTime.Now
+                },
+                ID = image.AlertID,
+                Item = detection
+            };
+            return indication;
         }
 
         public static DeviceConfiguration CreateDefaultConfig(string ip, int port)
@@ -165,7 +254,6 @@ namespace BriefCamMrsSensor.Models
                     new SensorConfiguration
                     {
                         SensorIdentification = sensorIdentification
-                        // todo: sensor configuration
                     }
                 }
             };
@@ -179,19 +267,18 @@ namespace BriefCamMrsSensor.Models
                 DeviceIdentification = deviceIdentification,
                 Items = new object[]
                 {
-                    new DetailedSensorBITType
-                    {
-                        SensorIdentification = sensorIdentification,
-                        FaultCode = new string[0]
-                    },
+                    //new DetailedSensorBITType
+                    //{
+                    //    SensorIdentification = sensorIdentification,
+                    //    FaultCode = new string[0]
+                    //},
                     new SensorStatusReport
                     {
                         SensorIdentification = sensorIdentification,
                         PowerState = StatusType.Yes,
                         SensorMode = SensorModeType.ON,
                         SensorTechnicalState = BITResultType.OK,
-                        CommunicationState = BITResultType.OK,
-                        // todo: sensor status
+                        CommunicationState = BITResultType.OK
                     }, 
                 }
             };
@@ -242,29 +329,6 @@ namespace BriefCamMrsSensor.Models
             }
         }
 
-        private static Point CreateMrsPoint(double lat, double lon)
-        {
-            return new Point
-            {
-                Item = new LocationType
-                {
-                    Item = new GeodeticLocation
-                    {
-                        Latitude = new Latitude
-                        {
-                            Units = LatLonUnitsType.DecimalDegrees,
-                            Value = lat
-                        },
-                        Longitude = new Longitude
-                        {
-                            Units = LatLonUnitsType.DecimalDegrees,
-                            Value = lon
-                        }
-                    }
-                }
-            };
-        }
-
         private static SeverityLevelsType ConverSeverityLevels(AlertSevirityTypes alertSevirity)
         {
             switch (alertSevirity)
@@ -298,6 +362,8 @@ namespace BriefCamMrsSensor.Models
                     return VehicleType.Bicycle;
                 case CarTypes.PickupTruck:
                     return VehicleType.Van;
+                case CarTypes.Bus:
+                    return VehicleType.Bus;
                 default:
                     return VehicleType.Undefined;
             }

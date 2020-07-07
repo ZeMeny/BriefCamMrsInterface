@@ -78,6 +78,16 @@ namespace BriefCamMrsSensor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap pp {
+            get {
+                object obj = ResourceManager.GetObject("pp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
         ///&lt;DeviceStatusReport xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; MessageType=&quot;Undefined&quot; ProtocolVersion=&quot;Undefined&quot;&gt;
         ///  &lt;DeviceIdentification xmlns=&quot;urn:SNSR_STD&quot;&gt;

@@ -146,5 +146,26 @@
                   HorizontalAlignment="Right" 
                   Margin="0,203,10.6,0" 
                   VerticalAlignment="Top" Height="18" Width="118"/>
+        <Button Content="Start Sim" HorizontalAlignment="Left" Margin="10,188,0,0" VerticalAlignment="Top" Width="120" Height="33"
+                Command="{Binding StartSimCommand}"/>
+        <Button Content="Stop Sim" HorizontalAlignment="Right" Margin="0,189,9.8,0" VerticalAlignment="Top" Width="120"
+                Command="{Binding StopSimCommand}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="135,196,0,0" TextWrapping="Wrap" Text="Sim Status:" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="198,196,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSimActive}" Value="True">
+                            <Setter Property="Text" Value="Enabled"/>
+                            <Setter Property="Foreground" Value="ForestGreen"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSimActive}" Value="False">
+                            <Setter Property="Text" Value="Disabled"/>
+                            <Setter Property="Foreground" Value="Red"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
     </Grid>
 </Window>
