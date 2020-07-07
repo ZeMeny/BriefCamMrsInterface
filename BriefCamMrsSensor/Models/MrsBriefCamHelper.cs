@@ -188,7 +188,7 @@ namespace BriefCamMrsSensor.Models
                 {
                     File1 = image.Image1,
                     ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "NameJPEG"
+                    Item = "image1.jpg"
                 });
             }
             if (image.Image2 != null)
@@ -197,7 +197,7 @@ namespace BriefCamMrsSensor.Models
                 {
                     File1 = image.Image2,
                     ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "NameJPEG"
+                    Item = "image2.jpg"
                 });
             }
             if (image.Image3 != null)
@@ -206,7 +206,7 @@ namespace BriefCamMrsSensor.Models
                 {
                     File1 = image.Image3,
                     ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "NameJPEG"
+                    Item = "image3.jpg"
                 });
             }
 
@@ -215,9 +215,9 @@ namespace BriefCamMrsSensor.Models
             {
                 videoFiles.Add(new File
                 {
-                    File1 = image.Image3,
-                    ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "NameJPEG"
+                    File1 = image.VideoClip,
+                    ItemElementName = ItemChoiceType3.NameMP4,
+                    Item = "videoClip.mp4"
                 });
             }
             var detection = new VideoAnalyticDetectionType
