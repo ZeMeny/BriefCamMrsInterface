@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 using BriefCamInterface.DataTypes;
 using Newtonsoft.Json;
 using SensorStandard.MrsTypes;
@@ -12,7 +11,7 @@ namespace BriefCamMrsSensor.Models
 
         public static string ToJson<T>(this T obj) where T : new()
         {
-            return JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
 
         public static Point CreateMrsPoint(double lat, double lon)
@@ -138,8 +137,8 @@ namespace BriefCamMrsSensor.Models
                         IsLicensePlate = string.IsNullOrEmpty(alert.LicensePlate) ? StatusType.No : StatusType.Yes,
                         VehicleTypeSpecified = true,
                         VehicleType = ConvertVehicleType(alert.CarType),
-                        LicenseTypeSpecified = true,
-                        LicenseType = ConvertLicenseType(alert.LicenseType),
+                        LicensePlateTypeSpecified = true,
+                        LicensePlateType = ConvertLicenseType(alert.LicenseType),
                         VehicleModelName = alert.CarBrandName,
                         Color = alert.CarColorName
                     },
@@ -153,7 +152,7 @@ namespace BriefCamMrsSensor.Models
                         CameraID = alert.SensorID,
                         CameraName = alert.SensorName,
                         LocationName = alert.SiteName,
-                        WatchDirection = alert.WatchDirection,
+                        FacingDirection = alert.WatchDirection,
                         SystemAlertTime = new TimeType
                         {
                             Zone = TimezoneType.GMT,
@@ -369,22 +368,22 @@ namespace BriefCamMrsSensor.Models
             }
         }
 
-        private static LicenseType ConvertLicenseType(LicenseTypes licenseType)
+        private static LicensePlateType ConvertLicenseType(LicenseTypes licenseType)
         {
             switch (licenseType)
             {
                 case LicenseTypes.Israeli:
-                    return LicenseType.Israeli;
+                    return LicensePlateType.Israeli;
                 case LicenseTypes.Palestinian:
-                    return LicenseType.Palestinian;
+                    return LicensePlateType.Palestinian;
                 case LicenseTypes.Diplomat:
-                    return LicenseType.Diplomat;
+                    return LicensePlateType.Diplomat;
                 case LicenseTypes.Army:
-                    return LicenseType.Military;
+                    return LicensePlateType.Military;
                 case LicenseTypes.Police:
-                    return LicenseType.Police;
+                    return LicensePlateType.Police;
                 default:
-                    return LicenseType.Undefined;
+                    return LicensePlateType.Undefined;
             }
         }
 

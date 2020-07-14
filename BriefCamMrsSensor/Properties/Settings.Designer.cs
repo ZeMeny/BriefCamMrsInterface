@@ -94,5 +94,41 @@ namespace BriefCamMrsSensor.Properties {
                 this["AlertsLocationCap"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("34.5")]
+        public double SimLocationLat {
+            get {
+                return ((double)(this["SimLocationLat"]));
+            }
+            set {
+                this["SimLocationLat"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("32.5")]
+        public double SimLocationLon {
+            get {
+                return ((double)(this["SimLocationLon"]));
+            }
+            set {
+                this["SimLocationLon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00:00:05")]
+        public global::System.TimeSpan SimRate {
+            get {
+                return ((global::System.TimeSpan)(this["SimRate"]));
+            }
+            set {
+                this["SimRate"] = value;
+            }
+        }
     }
 }

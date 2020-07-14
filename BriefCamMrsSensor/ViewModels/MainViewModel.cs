@@ -15,7 +15,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
 using SensorStandard;
 using SensorStandard.MrsTypes;
 using File = System.IO.File;
@@ -39,7 +38,7 @@ namespace BriefCamMrsSensor.ViewModels
         private BreifCamClient _breifCamClient;
         private readonly Sensor _sensor = Sensor.Instance;
         private readonly Dictionary<string, Point> _alertLocations = new Dictionary<string, Point>();
-        private readonly BriefcamSimulator _simulator = new BriefcamSimulator(TimeSpan.FromSeconds(5), 34.5, 32.5);
+        private readonly BriefcamSimulator _simulator;
         private bool _isSimActive;
 
         #endregion
@@ -536,7 +535,9 @@ namespace BriefCamMrsSensor.ViewModels
             _sensor.MessageReceived += Sensor_MessageReceived;
             _sensor.MessageSent += Sensor_MessageSent;
             _sensor.ValidationErrorOccured += Sensor_ValidationErrorOccured;
+            _sensor.AutoStatusReport = true;
 
+            _simulator = new BriefcamSimulator(Settings.Default.SimRate);
             _simulator.Alert += Simulator_Alert;
             _simulator.Image += Simulator_Image;
         }

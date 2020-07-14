@@ -20,5 +20,14 @@
     <Setting Name="AlertsLocationCap" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
+    <Setting Name="SimLocationLat" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">34.5</Value>
+    </Setting>
+    <Setting Name="SimLocationLon" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">32.5</Value>
+    </Setting>
+    <Setting Name="SimRate" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">00:00:05</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

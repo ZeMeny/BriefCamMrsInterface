@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Timers;
 using BriefCamInterface.DataTypes;
 using BriefCamMrsSensor.Properties;
+using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 
 namespace BriefCamMrsSensor.Models
@@ -15,8 +17,7 @@ namespace BriefCamMrsSensor.Models
 
         private readonly Timer _timer;
         private int _currentId;
-        private readonly double _latitude;
-        private readonly double _longitude;
+        private readonly string _alertJsonPath = AppDomain.CurrentDomain.BaseDirectory + "SimAlert.json";
 
         #endregion
 
@@ -27,6 +28,7 @@ namespace BriefCamMrsSensor.Models
         public bool IsActive => _timer.Enabled;
 
         #endregion
+
 
         #region / / / / /  Private Methods  / / / / /
 
@@ -39,28 +41,44 @@ namespace BriefCamMrsSensor.Models
 
         private Alert CreateAlert()
         {
-            return new Alert
+            try
             {
-                Latitude = _latitude,
-                Longitude = _longitude,
-                AlertID = (++_currentId).ToString(),
-                SensorAlertTime = DateTime.Now,
-                SuspectSex = GenderTypes.Male,
-                AlertDescription = "Simulation",
-                AlertObject = AlertObjectTypes.Man,
-                AlertReality = AlertRealityTypes.Drill,
-                AlertSeverity = AlertSevirityTypes.Low,
-                HumanID = "123456789",
-                PhoneNumber = "1234567890",
-                WeaponAccessabillity = WeaponAccessabilityTypes.NoWeapon,
-                SuspectBirthDate = new DateTime(1990,1,1),
-                SuspectAge = 30,
-                SystemAlertTime = DateTime.Now,
-                NameAddress = "Simulation",
-                AlertType = AlertTypes.FaceDetection,
-                AlertStatus = AlertStatusTypes.Active,
-                SensorType = SensorTypes.VideoCamera
-            };
+                using (StreamReader reader = new StreamReader(_alertJsonPath, Encoding.UTF8))
+                {
+                    var alert = JsonConvert.DeserializeObject<Alert>(reader.ReadToEnd());
+                    // override fields
+                    alert.AlertID = (++_currentId).ToString();
+                    alert.SystemAlertTime = DateTime.Now;
+                    alert.SensorAlertTime = DateTime.Now;
+                    
+                    return alert;
+                }
+            }
+            catch
+            {
+                return new Alert
+                {
+                    Latitude = 34.5,
+                    Longitude = 32.5,
+                    AlertID = (++_currentId).ToString(),
+                    SensorAlertTime = DateTime.Now,
+                    SuspectSex = GenderTypes.Male,
+                    AlertDescription = "Simulation",
+                    AlertObject = AlertObjectTypes.Man,
+                    AlertReality = AlertRealityTypes.Drill,
+                    AlertSeverity = AlertSevirityTypes.Low,
+                    HumanID = "123456789",
+                    PhoneNumber = "1234567890",
+                    WeaponAccessabillity = WeaponAccessabilityTypes.NoWeapon,
+                    SuspectBirthDate = new DateTime(1990, 1, 1),
+                    SuspectAge = 30,
+                    SystemAlertTime = DateTime.Now,
+                    NameAddress = "Simulation",
+                    AlertType = AlertTypes.FaceDetection,
+                    AlertStatus = AlertStatusTypes.Active,
+                    SensorType = SensorTypes.VideoCamera
+                };
+            }
         }
 
         private Image CreateImage()
@@ -79,13 +97,12 @@ namespace BriefCamMrsSensor.Models
 
         #endregion
 
+
         #region / / / / /  Public Methods  / / / / /
 
-        public BriefcamSimulator(TimeSpan rate, double locationLat, double locationLon)
+        public BriefcamSimulator(TimeSpan rate)
         {
             Rate = rate;
-            _latitude = locationLat;
-            _longitude = locationLon;
 
             _timer = new Timer(Rate.TotalMilliseconds);
             _timer.Elapsed += Timer_Elapsed;
@@ -102,6 +119,7 @@ namespace BriefCamMrsSensor.Models
         }
 
         #endregion
+
 
         #region / / / / /  Events  / / / / /
 
