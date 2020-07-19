@@ -47,10 +47,13 @@ namespace BriefCamMrsSensor.Models
                 {
                     var alert = JsonConvert.DeserializeObject<Alert>(reader.ReadToEnd());
                     // override fields
-                    alert.AlertID = (++_currentId).ToString();
-                    alert.SystemAlertTime = DateTime.Now;
-                    alert.SensorAlertTime = DateTime.Now;
-                    
+                    if (Settings.Default.SimOverride)
+                    {
+                        alert.AlertID = (++_currentId).ToString();
+                        alert.SystemAlertTime = DateTime.Now;
+                        alert.SensorAlertTime = DateTime.Now;
+                    }
+
                     return alert;
                 }
             }

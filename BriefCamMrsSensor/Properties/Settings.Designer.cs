@@ -130,5 +130,17 @@ namespace BriefCamMrsSensor.Properties {
                 this["SimRate"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SimOverride {
+            get {
+                return ((bool)(this["SimOverride"]));
+            }
+            set {
+                this["SimOverride"] = value;
+            }
+        }
     }
 }
