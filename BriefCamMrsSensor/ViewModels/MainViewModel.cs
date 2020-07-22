@@ -461,17 +461,17 @@ namespace BriefCamMrsSensor.ViewModels
             WriteSensorLog("Validation Error", messageException, true);
         }
 
-        private void Sensor_MessageSent(MarsMessageTypes messageType, MrsMessage message, string marsName)
+        private void Sensor_MessageSent(MrsMessageTypes messageType, MrsMessage message, string marsName)
         {
-            if (messageType != MarsMessageTypes.DeviceStatusReport || ShowStatusReports)
+            if (messageType != MrsMessageTypes.DeviceStatusReport || ShowStatusReports)
             {
-                WriteSensorLog($"{messageType} Sent", message.ToXml(), messageType == MarsMessageTypes.DeviceIndicationReport);
+                WriteSensorLog($"{messageType} Sent", message.ToXml(), messageType == MrsMessageTypes.DeviceIndicationReport);
             }
         }
 
-        private void Sensor_MessageReceived(MarsMessageTypes messageType, MrsMessage message, string marsName)
+        private void Sensor_MessageReceived(MrsMessageTypes messageType, MrsMessage message, string marsName)
         {
-            if (messageType == MarsMessageTypes.CommandMessage && message.ToXml().Contains("KeepAlive") && !ShowStatusReports)
+            if (messageType == MrsMessageTypes.CommandMessage && message.ToXml().Contains("KeepAlive") && !ShowStatusReports)
             {
                 return;
             }
