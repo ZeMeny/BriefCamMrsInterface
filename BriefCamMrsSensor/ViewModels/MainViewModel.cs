@@ -455,27 +455,27 @@ namespace BriefCamMrsSensor.ViewModels
             WriteBriefCamLog("Error Occurred", e, true);
         }
 
-        private void Sensor_ValidationErrorOccured(InvalidMessageException messageException)
+        private void Sensor_ValidationErrorOccured(object sender, InvalidMessageException messageException)
         {
             _logger.Error("Mars Sensor Validation Error", messageException);
             WriteSensorLog("Validation Error", messageException, true);
         }
 
-        private void Sensor_MessageSent(MrsMessageTypes messageType, MrsMessage message, string marsName)
+        private void Sensor_MessageSent(MrsMessage message, string marsName)
         {
-            if (messageType != MrsMessageTypes.DeviceStatusReport || ShowStatusReports)
+            if (message.MrsMessageType != MrsMessageTypes.DeviceStatusReport || ShowStatusReports)
             {
-                WriteSensorLog($"{messageType} Sent", message.ToXml(), messageType == MrsMessageTypes.DeviceIndicationReport);
+                WriteSensorLog($"{message.MrsMessageType} Sent", message.ToXml(), message.MrsMessageType == MrsMessageTypes.DeviceIndicationReport);
             }
         }
 
-        private void Sensor_MessageReceived(MrsMessageTypes messageType, MrsMessage message, string marsName)
+        private void Sensor_MessageReceived(MrsMessage message, string marsName)
         {
-            if (messageType == MrsMessageTypes.CommandMessage && message.ToXml().Contains("KeepAlive") && !ShowStatusReports)
+            if (message.MrsMessageType == MrsMessageTypes.CommandMessage && message.ToXml().Contains("KeepAlive") && !ShowStatusReports)
             {
                 return;
             }
-            WriteSensorLog($"{messageType} Received", message.ToXml());
+            WriteSensorLog($"{message.MrsMessageType} Received", message.ToXml());
         }
 
         private void Simulator_Image(object sender, BriefCamInterface.DataTypes.Image e)
