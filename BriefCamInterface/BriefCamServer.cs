@@ -109,7 +109,7 @@ namespace BriefCamInterface
 				throw new ArgumentException("Invalid ip address", nameof(ip));
 			}
 
-			if (port > 0 && port < 65535)
+			if (port < 0 || port > 65535)
 			{
 				throw new ArgumentNullException(nameof(port), "port must be larger than 0 and smaller than 65535");
 			}

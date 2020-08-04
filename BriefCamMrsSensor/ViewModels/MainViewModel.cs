@@ -42,6 +42,8 @@ namespace BriefCamMrsSensor.ViewModels
         private readonly Dictionary<string, Point> _alertLocations = new Dictionary<string, Point>();
         private readonly BriefcamSimulator _simulator;
         private bool _isSimActive;
+        private readonly string _configPath = AppDomain.CurrentDomain.BaseDirectory + "Configuration.xml";
+        private readonly string _statusPath = AppDomain.CurrentDomain.BaseDirectory + "StatusReport.xml";
 
         #endregion
 
@@ -177,6 +179,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             _briefCamAction = () =>
             {
+                _breifCamServer?.Stop();
                 _breifCamServer = new BriefCamServer(BriefCamServerIP, BriefCamServerPort, BriefCamServerLog);
                 _breifCamServer.AlertReceived += BreifCamServerOnAlertReceived;
                 _breifCamServer.ImageReceived += BreifCamServer_ImageReceived;
@@ -234,12 +237,11 @@ namespace BriefCamMrsSensor.ViewModels
                 var configuration = MrsBriefCamHelper.CreateDefaultConfig(SensorIP, SensorPort);
                 var status = MrsBriefCamHelper.CreateDefaultStatus();
 
-                string path = AppDomain.CurrentDomain.BaseDirectory + "Configuration.xml";
-                if (File.Exists(path))
+                if (File.Exists(_configPath))
                 {
                     try
                     {
-                        configuration = MrsMessage.Load<DeviceConfiguration>(File.ReadAllText(path));
+                        configuration = MrsMessage.Load<DeviceConfiguration>(File.ReadAllText(_configPath));
                         configuration.NotificationServiceIPAddress = SensorIP;
                         configuration.NotificationServicePort = SensorPort.ToString();
                     }
@@ -249,12 +251,11 @@ namespace BriefCamMrsSensor.ViewModels
                     }
                 }
 
-                path = AppDomain.CurrentDomain.BaseDirectory + "StatusReport.xml";
-                if (File.Exists(path))
+                if (File.Exists(_statusPath))
                 {
                     try
                     {
-                        status = MrsMessage.Load<DeviceStatusReport>(File.ReadAllText(path));
+                        status = MrsMessage.Load<DeviceStatusReport>(File.ReadAllText(_statusPath));
                     }
                     catch (Exception ex)
                     {
@@ -280,18 +281,18 @@ namespace BriefCamMrsSensor.ViewModels
             Settings.Default.ValidateMessages = ValidateMessages;
             Settings.Default.Save();
 
-            if (_indicationSensor.DeviceConfiguration != null && !File.Exists("Configuration.xml"))
+            if (_indicationSensor.DeviceConfiguration != null && !File.Exists(_configPath))
             {
-                using (FileStream stream = new FileStream("Configuration.xml", FileMode.Create))
+                using (FileStream stream = new FileStream(_configPath, FileMode.Create))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(DeviceConfiguration));
                     serializer.Serialize(stream, _indicationSensor.DeviceConfiguration);
                 }
             }
 
-            if (_indicationSensor.StatusReport != null && !File.Exists("StatusReport.xml"))
+            if (_indicationSensor.StatusReport != null && !File.Exists(_statusPath))
             {
-                using (FileStream stream = new FileStream("StatusReport.xml", FileMode.Create))
+                using (FileStream stream = new FileStream(_statusPath, FileMode.Create))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(DeviceStatusReport));
                     serializer.Serialize(stream, _indicationSensor.StatusReport);
@@ -371,12 +372,6 @@ namespace BriefCamMrsSensor.ViewModels
         {
             string pattern = @"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
             return ip != null && Regex.IsMatch(ip, pattern) && port > 0 && port < 65535;
-        }
-
-        private bool ValidateUrl(string url)
-        {
-            return Uri.TryCreate(url, UriKind.Absolute, out var uriResult)
-                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         private void ClearSensorLog()
@@ -524,7 +519,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             LoadedCommand = new Command(LoadApp);
             ClosedCommand = new Command(CloseApp);
-            StartBriefCamCommand = new Command(StartBriefCamClient, () => ValidateUrl(BriefCamServerIP));
+            StartBriefCamCommand = new Command(StartBriefCamClient, () => ValidateIpEndpoint(BriefCamServerIP, BriefCamServerPort));
             StopBriefCamCommand = new Command(StopBriefCamClient);
             StartSensorCommand = new Command(StartSensor, () => ValidateIpEndpoint(SensorIP, SensorPort));
             StopSensorCommand = new Command(StopSensor);
