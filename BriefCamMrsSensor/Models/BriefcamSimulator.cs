@@ -92,6 +92,7 @@ namespace BriefCamMrsSensor.Models
                 return new Image
                 {
                     Image1 = stream.ToArray(),
+                    VideoClip = Resources.file_example_MP4_640_3MG,
                     AlertID = _currentId.ToString(),
                     DistributionTime = DateTime.Now
                 };

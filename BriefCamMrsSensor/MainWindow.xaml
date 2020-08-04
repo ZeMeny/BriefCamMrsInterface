@@ -43,20 +43,25 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <GroupBox Header="BriefCam" Margin="10,10,9.8,0" Height="173" VerticalAlignment="Top">
+        <GroupBox Header="BriefCam Server" Margin="10,10,9.8,0" Height="173" VerticalAlignment="Top">
             <Grid>
-                <TextBox Margin="9,10,11.2,0"
-                         Text="{Binding RemoteServerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Margin="9,10,130.2,0"
+                         Text="{Binding BriefCamServerIP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
-                         materialDesign:HintAssist.Hint="BriefCam Server Url" 
+                         materialDesign:HintAssist.Hint="IP" 
                          Height="50" VerticalAlignment="Top"/>
-                <Button Content="Connect" 
+                <TextBox Margin="0,10,10.2,0"
+                         Text="{Binding BriefCamServerPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:HintAssist.Hint="Port" 
+                         Height="50" VerticalAlignment="Top" HorizontalAlignment="Right" Width="105"/>
+                <Button Content="Start" 
                         HorizontalAlignment="Left" 
                         Margin="10,0,0,10" 
                         Width="150" Height="34" 
                         VerticalAlignment="Bottom"
                         Command="{Binding StartBriefCamCommand}"/>
-                <Button Content="Disconnect" 
+                <Button Content="Stop" 
                         HorizontalAlignment="Right" 
                         Margin="0,0,10.4,9.8" 
                         Width="150" Height="34" 
@@ -64,7 +69,7 @@
                         Command="{Binding StopBriefCamCommand}"/>
             </Grid>
         </GroupBox>
-        <GroupBox Header="Mars" 
+        <GroupBox Header="Mars Sensor" 
                   Grid.Column="1" 
                   Margin="10.2,10,9.6,0" 
                   Height="173" 

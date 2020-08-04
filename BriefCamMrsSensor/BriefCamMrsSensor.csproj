@@ -141,6 +141,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\pp.jpg" />
+    <None Include="Resources\file_example_MP4_640_3MG.mp4" />
     <Content Include="Resources\Status.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

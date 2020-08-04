@@ -5,7 +5,7 @@ using WebSocket4Net;
 
 namespace BriefCamInterface
 {
-    public class BreifCamClient
+    public class BriefCamClient
     {
         #region / / / / /  Private fields  / / / / /
 
@@ -47,7 +47,7 @@ namespace BriefCamInterface
 
         #region / / / / /  Public methods  / / / / /
 
-        public BreifCamClient(Uri address)
+        public BriefCamClient(Uri address)
         {
             _socket = new WebSocket(address.OriginalString);
             _socket.MessageReceived += Socket_MessageReceived;

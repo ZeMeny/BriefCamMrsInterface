@@ -78,6 +78,16 @@ namespace BriefCamMrsSensor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] file_example_MP4_640_3MG {
+            get {
+                object obj = ResourceManager.GetObject("file_example_MP4_640_3MG", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap pp {

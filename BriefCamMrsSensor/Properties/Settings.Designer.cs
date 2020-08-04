@@ -142,5 +142,17 @@ namespace BriefCamMrsSensor.Properties {
                 this["SimOverride"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int BriefCamPort {
+            get {
+                return ((int)(this["BriefCamPort"]));
+            }
+            set {
+                this["BriefCamPort"] = value;
+            }
+        }
     }
 }

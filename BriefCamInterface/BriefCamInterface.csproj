@@ -34,11 +34,17 @@
     <Reference Include="DotLiquid, Version=2.0.314.0, Culture=neutral, PublicKeyToken=82e46016ecf9f07c, processorArchitecture=MSIL">
       <HintPath>..\packages\DotLiquid.2.0.314\lib\net45\DotLiquid.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Namotion.Reflection, Version=1.0.11.0, Culture=neutral, PublicKeyToken=c2f9c3bdfae56102, processorArchitecture=MSIL">
       <HintPath>..\packages\Namotion.Reflection.1.0.11\lib\net45\Namotion.Reflection.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleHttpServer">
+      <HintPath>..\..\..\Github repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\SimpleHttpServer.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.ClientEngine, Version=0.10.0.0, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
@@ -56,15 +62,20 @@
     <Reference Include="WebSocket4Net, Version=0.15.2.11, Culture=neutral, PublicKeyToken=eb4e154b696bf72a, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocket4Net.0.15.2\lib\net45\WebSocket4Net.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BriefCamClient.cs" />
+    <Compile Include="BriefCamServer.cs" />
     <Compile Include="DataTypes\Alert.cs" />
     <Compile Include="DataTypes\AlertObjectTypes.cs" />
     <Compile Include="DataTypes\AlertRealityTypes.cs" />
     <Compile Include="DataTypes\AlertSevirityTypes.cs" />
     <Compile Include="DataTypes\AlertStatusTypes.cs" />
     <Compile Include="DataTypes\AlertTypes.cs" />
+    <Compile Include="DataTypes\Camera.cs" />
+    <Compile Include="DataTypes\CameraStatus.cs" />
+    <Compile Include="DataTypes\CameraTypes.cs" />
     <Compile Include="DataTypes\CarTypes.cs" />
     <Compile Include="DataTypes\GenderTypes.cs" />
     <Compile Include="DataTypes\Image.cs" />
@@ -73,7 +84,6 @@
     <Compile Include="DataTypes\WeaponAccessabilityTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
