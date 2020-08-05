@@ -154,5 +154,17 @@ namespace BriefCamMrsSensor.Properties {
                 this["BriefCamPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int CameraSensorPort {
+            get {
+                return ((int)(this["CameraSensorPort"]));
+            }
+            set {
+                this["CameraSensorPort"] = value;
+            }
+        }
     }
 }

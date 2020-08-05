@@ -33,7 +33,22 @@ namespace BriefCamInterface
 		{
 			try
 			{
-				Camera camera = JsonConvert.DeserializeObject<Camera>(request.Content);
+				if (request.Method.ToUpper() != "POST")
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.MethodNotAllowed,
+						ContentAsUTF8 = "Only POST are allowed"
+					};
+				}
+				if (string.IsNullOrEmpty(request.Content))
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.BadRequest
+					};
+				}
+				Camera[] camera = JsonConvert.DeserializeObject<Camera[]>(request.Content);
 				CameraReceived?.Invoke(this, camera);
 
 				return new HttpResponse
@@ -55,6 +70,21 @@ namespace BriefCamInterface
 		{
 			try
 			{
+				if (request.Method.ToUpper() != "POST")
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.MethodNotAllowed,
+						ContentAsUTF8 = "Only POST are allowed"
+					};
+				}
+				if (string.IsNullOrEmpty(request.Content))
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.BadRequest
+					};
+				}
 				Image image = JsonConvert.DeserializeObject<Image>(request.Content);
 				ImageReceived?.Invoke(this, image);
 
@@ -77,6 +107,29 @@ namespace BriefCamInterface
 		{
 			try
 			{
+				if (request.Method.ToUpper() == "GET")
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.Ok,
+						ContentAsUTF8 = "Hello :)"
+					};
+				}
+				if (request.Method.ToUpper() != "POST")
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.MethodNotAllowed,
+						ContentAsUTF8 = "Only POST are allowed"
+					};
+				}
+				if (string.IsNullOrEmpty(request.Content))
+				{
+					return new HttpResponse
+					{
+						StatusCode = HttpStatusCode.BadRequest
+					};
+				}
 				Alert alert = JsonConvert.DeserializeObject<Alert>(request.Content);
 				AlertReceived?.Invoke(this, alert);
 
@@ -125,6 +178,13 @@ namespace BriefCamInterface
 				},
 				new Route
 				{
+					Callable = AlertHandler,
+					Name = "Alert Hanlder",
+					Method = "GET",
+					UrlRegex = @"^/alerts$"
+				},
+				new Route
+				{
 					Callable = ImageHandler,
 					Name = "Image Hanlder",
 					Method = "POST",
@@ -154,7 +214,7 @@ namespace BriefCamInterface
 
 		public event EventHandler<Alert> AlertReceived;
 		public event EventHandler<Image> ImageReceived;
-		public event EventHandler<Camera> CameraReceived;
+		public event EventHandler<Camera[]> CameraReceived;
 
 		#endregion
 	}

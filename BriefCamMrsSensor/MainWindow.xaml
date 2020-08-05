@@ -75,19 +75,26 @@
                   Height="173" 
                   VerticalAlignment="Top">
             <Grid>
-                <TextBox Margin="10,10,132.4,0" 
+                <TextBox Margin="10,10,204.2,0" 
                          Height="50"
                          Text="{Binding SensorIP, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          VerticalAlignment="Top" 
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:HintAssist.Hint="IP"/>
-                <TextBox Margin="0,10,10.4,0" 
-                         Height="50" Width="100"
+                <TextBox Margin="0,10,104.2,0" 
+                         Height="50" Width="90"
                          Text="{Binding SensorPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          VerticalAlignment="Top" 
                          HorizontalAlignment="Right"
                          Style="{StaticResource MaterialDesignFloatingHintTextBox}"
                          materialDesign:HintAssist.Hint="Port" />
+                <TextBox Margin="0,10,10.2,0" 
+                         Height="50" Width="89"
+                         Text="{Binding CameraSensorPort, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         VerticalAlignment="Top" 
+                         HorizontalAlignment="Right"
+                         Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                         materialDesign:HintAssist.Hint="Camera Tree Port" />
                 <Button Content="Start" 
                         HorizontalAlignment="Left" 
                         Margin="10,0,0,9.6" 

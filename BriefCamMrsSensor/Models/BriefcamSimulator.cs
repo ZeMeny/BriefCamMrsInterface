@@ -18,8 +18,10 @@ namespace BriefCamMrsSensor.Models
         private readonly Timer _timer;
         private int _currentId;
         private readonly string _alertJsonPath = AppDomain.CurrentDomain.BaseDirectory + "SimAlert.json";
+        private readonly string _camerasJsonPath = AppDomain.CurrentDomain.BaseDirectory + "SimCameras.json";
 
         #endregion
+
 
         #region / / / / /  Properties  / / / / /
 
@@ -34,6 +36,7 @@ namespace BriefCamMrsSensor.Models
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            Cameras?.Invoke(this, CreateCameras());
             Alert?.Invoke(this, CreateAlert());
             Thread.Sleep(1000);
             Image?.Invoke(this, CreateImage());
@@ -41,47 +44,54 @@ namespace BriefCamMrsSensor.Models
 
         private Alert CreateAlert()
         {
-            try
+            var alert = new Alert
             {
-                using (StreamReader reader = new StreamReader(_alertJsonPath, Encoding.UTF8))
-                {
-                    var alert = JsonConvert.DeserializeObject<Alert>(reader.ReadToEnd());
-                    // override fields
-                    if (Settings.Default.SimOverride)
-                    {
-                        alert.AlertID = (++_currentId).ToString();
-                        alert.SystemAlertTime = DateTime.Now;
-                        alert.SensorAlertTime = DateTime.Now;
-                    }
+                Latitude = 34.5,
+                Longitude = 32.5,
+                AlertID = (++_currentId).ToString(),
+                SensorAlertTime = DateTime.Now,
+                SuspectSex = GenderTypes.Male,
+                AlertDescription = "Simulation",
+                AlertObject = AlertObjectTypes.Man,
+                AlertReality = AlertRealityTypes.Drill,
+                AlertSeverity = AlertSevirityTypes.Low,
+                HumanID = "123456789",
+                PhoneNumber = "1234567890",
+                WeaponAccessabillity = WeaponAccessabilityTypes.NoWeapon,
+                SuspectBirthDate = new DateTime(1990, 1, 1),
+                SuspectAge = 30,
+                SystemAlertTime = DateTime.Now,
+                NameAddress = "Simulation",
+                AlertType = AlertTypes.FaceDetection,
+                AlertStatus = AlertStatusTypes.Active,
+                SensorType = SensorTypes.VideoCamera
+            };
 
+            if (File.Exists(_alertJsonPath))
+            {
+                try
+                {
+                    using (StreamReader reader = new StreamReader(_alertJsonPath, Encoding.UTF8))
+                    {
+                        alert = JsonConvert.DeserializeObject<Alert>(reader.ReadToEnd());
+                        // override fields
+                        if (Settings.Default.SimOverride)
+                        {
+                            alert.AlertID = (++_currentId).ToString();
+                            alert.SystemAlertTime = DateTime.Now;
+                            alert.SensorAlertTime = DateTime.Now;
+                        }
+
+                        return alert;
+                    }
+                }
+                catch
+                {
                     return alert;
                 }
             }
-            catch
-            {
-                return new Alert
-                {
-                    Latitude = 34.5,
-                    Longitude = 32.5,
-                    AlertID = (++_currentId).ToString(),
-                    SensorAlertTime = DateTime.Now,
-                    SuspectSex = GenderTypes.Male,
-                    AlertDescription = "Simulation",
-                    AlertObject = AlertObjectTypes.Man,
-                    AlertReality = AlertRealityTypes.Drill,
-                    AlertSeverity = AlertSevirityTypes.Low,
-                    HumanID = "123456789",
-                    PhoneNumber = "1234567890",
-                    WeaponAccessabillity = WeaponAccessabilityTypes.NoWeapon,
-                    SuspectBirthDate = new DateTime(1990, 1, 1),
-                    SuspectAge = 30,
-                    SystemAlertTime = DateTime.Now,
-                    NameAddress = "Simulation",
-                    AlertType = AlertTypes.FaceDetection,
-                    AlertStatus = AlertStatusTypes.Active,
-                    SensorType = SensorTypes.VideoCamera
-                };
-            }
+
+            return alert;
         }
 
         private Image CreateImage()
@@ -97,6 +107,102 @@ namespace BriefCamMrsSensor.Models
                     DistributionTime = DateTime.Now
                 };
             }
+        }
+
+        private Camera[] CreateCameras()
+        {
+            var cameras = new[]
+            {
+                new Camera
+                {
+                    CameraName = "Camera1",
+                    SiteName = "Site1",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera2",
+                    SiteName = "Site1",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera3",
+                    SiteName = "Site1",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera1",
+                    SiteName = "Site2",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera2",
+                    SiteName = "Site2",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera3",
+                    SiteName = "Site2",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera1",
+                    SiteName = "Site3",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera2",
+                    SiteName = "Site3",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                },
+                new Camera
+                {
+                    CameraName = "Camera3",
+                    SiteName = "Site3",
+                    CameraStatus = CameraStatus.Ok,
+                    Longtitude = 34.5,
+                    Latitude = 32.5
+                }
+            };
+
+            if (File.Exists(_camerasJsonPath))
+            {
+                try
+                {
+                    lock (this)
+                    {
+                        return JsonConvert.DeserializeObject<Camera[]>(File.ReadAllText(_camerasJsonPath)); 
+                    }
+                }
+                catch
+                {
+                    return cameras;
+                }
+            }
+
+            return cameras;
         }
 
         #endregion
@@ -129,6 +235,7 @@ namespace BriefCamMrsSensor.Models
 
         public event EventHandler<Alert> Alert;
         public event EventHandler<Image> Image;
+        public event EventHandler<Camera[]> Cameras;
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BriefCamInterface.DataTypes;
 using Newtonsoft.Json;
 using SensorStandard.MrsTypes;
@@ -9,7 +10,7 @@ namespace BriefCamMrsSensor.Models
     public static class MrsBriefCamHelper
     {
 
-        public static string ToJson<T>(this T obj) where T : new()
+        public static string ToJson<T>(this T obj)
         {
             return JsonConvert.SerializeObject(obj, Formatting.Indented);
         }
@@ -283,6 +284,107 @@ namespace BriefCamMrsSensor.Models
             };
         }
 
+        public static DeviceConfiguration CreateConfiguration(Camera[] cameras)
+        {
+            string[] siteNames = cameras.Select(c => c.SiteName).Distinct().ToArray();
+            Dictionary<string, Camera[]> camerasBySite = new Dictionary<string, Camera[]>();
+            foreach (var site in siteNames)
+            {
+                camerasBySite.Add(site, cameras.Where(c=>c.SiteName == site).ToArray());
+            }
+
+            List<DeviceConfiguration> subConfigs = new List<DeviceConfiguration>();
+            foreach (var cameraSite in camerasBySite)
+            {
+                var subConfig = new DeviceConfiguration
+                {
+                    DeviceIdentification = new DeviceIdentificationType
+                    {
+                        DeviceName = cameraSite.Key,
+                        DeviceType = DeviceTypeType.CameraNetworkSystem
+                    }
+                };
+                List<SensorConfiguration> sensors = new List<SensorConfiguration>();
+                foreach (var camera in cameraSite.Value)
+                {
+                    sensors.Add(new SensorConfiguration
+                    {
+                        SensorIdentification = new SensorIdentificationType
+                        {
+                            SensorType = SensorTypeType.StaringCamera,
+                            SensorName = camera.CameraName
+                        },
+                        LocationType = CreateMarsLocation(camera.Latitude, camera.Longtitude)
+                    });
+                }
+
+                subConfig.SensorConfiguration = sensors.ToArray();
+                subConfigs.Add(subConfig);
+            }
+
+            return new DeviceConfiguration
+            {
+                DeviceIdentification = new DeviceIdentificationType
+                {
+                    DeviceName = "CameraHub",
+                    DeviceType = DeviceTypeType.DeviceHub
+                },
+                DeviceConfiguration1 = subConfigs.ToArray()
+            };
+        }
+
+        public static DeviceStatusReport CreateStatusReport(Camera[] cameras)
+        {
+            string[] siteNames = cameras.Select(c => c.SiteName).Distinct().ToArray();
+            Dictionary<string, Camera[]> camerasBySite = new Dictionary<string, Camera[]>();
+            foreach (var site in siteNames)
+            {
+                camerasBySite.Add(site, cameras.Where(c => c.SiteName == site).ToArray());
+            }
+
+            List<DeviceStatusReport> subStatusReports = new List<DeviceStatusReport>();
+            foreach (var cameraSite in camerasBySite)
+            {
+                var deviceStatus = new DeviceStatusReport
+                {
+                    DeviceIdentification = new DeviceIdentificationType
+                    {
+                        DeviceName = cameraSite.Key,
+                        DeviceType = DeviceTypeType.CameraNetworkSystem
+                    }
+                };
+                List<SensorStatusReport> sensors = new List<SensorStatusReport>();
+                foreach (var camera in cameraSite.Value)
+                {
+                    sensors.Add(new SensorStatusReport
+                    {
+                        SensorIdentification = new SensorIdentificationType
+                        {
+                            SensorType = SensorTypeType.StaringCamera,
+                            SensorName = camera.CameraName
+                        },
+                        CommunicationState = ConvertCameraStatus(camera.CameraStatus),
+                        PowerState = camera.CameraStatus == CameraStatus.Ok ? StatusType.Yes : StatusType.No,
+                        SensorTechnicalState = ConvertCameraStatus(camera.CameraStatus),
+                        SensorMode = SensorModeType.Normal
+                    });
+                }
+
+                deviceStatus.Items = sensors.ToArray();
+                subStatusReports.Add(deviceStatus);
+            }
+
+            return new DeviceStatusReport
+            {
+                DeviceIdentification = new DeviceIdentificationType
+                {
+                    DeviceName = "CameraHub",
+                    DeviceType = DeviceTypeType.DeviceHub
+                },
+                Items = subStatusReports.ToArray()
+            };
+        }
+
         private static StatusType ConvertAlertStatus(AlertStatusTypes alertStatus)
         {
             switch (alertStatus)
@@ -415,6 +517,41 @@ namespace BriefCamMrsSensor.Models
                 default:
                     return DetectionType.Undefined;
             }
+        }
+
+        private static BITResultType ConvertCameraStatus(CameraStatus cameraStatus)
+        {
+            switch (cameraStatus)
+            {
+                case CameraStatus.Ok:
+                    return BITResultType.OK;
+                case CameraStatus.Fault:
+                    return BITResultType.Fault;
+                case CameraStatus.Other:
+                    return BITResultType.Undefined;
+                default:
+                    return BITResultType.Undefined;
+            }
+        }
+
+        private static LocationType CreateMarsLocation(double lat, double lon)
+        {
+            return new LocationType
+            {
+                Item = new GeodeticLocation
+                {
+                    Latitude = new Latitude
+                    {
+                        Units = LatLonUnitsType.DecimalDegrees,
+                        Value = lat
+                    },
+                    Longitude = new Longitude
+                    {
+                        Units = LatLonUnitsType.DecimalDegrees,
+                        Value = lon
+                    }
+                }
+            };
         }
     }
 }
