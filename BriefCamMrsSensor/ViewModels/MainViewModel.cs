@@ -41,7 +41,7 @@ namespace BriefCamMrsSensor.ViewModels
         private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
         private BriefCamServer _breifCamServer;
         private Sensor _indicationSensor;
-        private readonly Dictionary<string, Point> _alertLocations = new Dictionary<string, Point>();
+        private readonly Dictionary<string, AlertData> _alertsData = new Dictionary<string, AlertData>();
         private readonly BriefcamSimulator _simulator;
         private bool _isSimActive;
         private readonly string _configPath = AppDomain.CurrentDomain.BaseDirectory + "Configuration.xml";
@@ -301,10 +301,9 @@ namespace BriefCamMrsSensor.ViewModels
 
         private void BreifCamServerOnImageReceived(object sender, BriefCamInterface.DataTypes.Image e)
         {
-            if (_alertLocations.ContainsKey(e.AlertID))
+            if (_alertsData.ContainsKey(e.AlertID))
             {
-                var location = _alertLocations[e.AlertID];
-                _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, location));
+                _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, _alertsData[e.AlertID]));
                 _logger.Info("BriefCam Server: Image Received");
                 WriteBriefCamLog("Image Received", e.ToJson());
             }
@@ -318,13 +317,24 @@ namespace BriefCamMrsSensor.ViewModels
         private void BreifCamServerOnAlertReceived(object sender, Alert e)
         {
             _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertAlert(e));
-            if (_alertLocations.ContainsKey(e.AlertID))
+            if (_alertsData.ContainsKey(e.AlertID))
             {
-                _alertLocations[e.AlertID] = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude);
+                _alertsData[e.AlertID] = new AlertData
+                {
+                    Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                    AlertType = e.AlertType,
+                    AlertObject = e.AlertObject
+                };
             }
             else
             {
-                _alertLocations.Add(e.AlertID, MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude));
+                _alertsData.Add(e.AlertID,
+                    _alertsData[e.AlertID] = new AlertData
+                    {
+                        Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                        AlertType = e.AlertType,
+                        AlertObject = e.AlertObject
+                    });
             }
             _logger.Warn("BriefCam Server: Alert Received");
             WriteBriefCamLog("Alert Received", e.ToJson(), true);
@@ -388,6 +398,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             _indicationSensor?.CloseWebService();
             _cameraSensor?.CloseWebService();
+            _cameraSensor = null;
         }
 
         private void SaveConfig()
@@ -601,10 +612,9 @@ namespace BriefCamMrsSensor.ViewModels
 
         private void Simulator_Image(object sender, BriefCamInterface.DataTypes.Image e)
         {
-            if (_alertLocations.ContainsKey(e.AlertID))
+            if (_alertsData.ContainsKey(e.AlertID))
             {
-                var location = _alertLocations[e.AlertID];
-                _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, location));
+                _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, _alertsData[e.AlertID]));
                 WriteBriefCamLog("Simulator: Image Received", e.ToJson());
             }
             else
@@ -616,15 +626,26 @@ namespace BriefCamMrsSensor.ViewModels
         private void Simulator_Alert(object sender, Alert e)
         {
             _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertAlert(e));
-            if (_alertLocations.ContainsKey(e.AlertID))
+            if (_alertsData.ContainsKey(e.AlertID))
             {
-                _alertLocations[e.AlertID] = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude);
+                _alertsData[e.AlertID] = new AlertData
+                {
+                    Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                    AlertType = e.AlertType,
+                    AlertObject = e.AlertObject
+                };
             }
             else
             {
-                _alertLocations.Add(e.AlertID, MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude));
+                _alertsData.Add(e.AlertID,
+                    _alertsData[e.AlertID] = new AlertData
+                    {
+                        Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                        AlertType = e.AlertType,
+                        AlertObject = e.AlertObject
+                    });
             }
-            
+
             WriteBriefCamLog("Simulator: Alert Received", e.ToJson(), true);
         }
 

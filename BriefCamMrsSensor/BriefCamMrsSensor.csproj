@@ -78,6 +78,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\AlertData.cs" />
     <Compile Include="Models\BriefcamSimulator.cs" />
     <Compile Include="Models\MrsBriefCamHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

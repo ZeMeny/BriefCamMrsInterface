@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BriefCamInterface.DataTypes;
+using BriefCamMrsSensor.ViewModels;
 using Newtonsoft.Json;
 using SensorStandard.MrsTypes;
 
@@ -179,7 +180,7 @@ namespace BriefCamMrsSensor.Models
             };
         }
 
-        public static IndicationType ConvertImage(Image image, Point location)
+        public static IndicationType ConvertImage(Image image, AlertData alertData)
         {
             List<File> imageFiles = new List<File>();
             if (image.Image1 != null)
@@ -222,9 +223,15 @@ namespace BriefCamMrsSensor.Models
             }
             var detection = new VideoAnalyticDetectionType
             {
-                Location = location,
+                Location = alertData.Location,
                 Picture = imageFiles.Count > 0 ?  imageFiles.ToArray() : null,
-                Video = videoFiles.Count > 0 ? videoFiles.ToArray() : null
+                Video = videoFiles.Count > 0 ? videoFiles.ToArray() : null,
+                DetectionTypeSpecified = true,
+                DetectionType = ConvertDetectionType(alertData.AlertObject),
+                AlertIdentification = new AlertIdentification
+                {
+                    AlertType = ConvertAlertType(alertData.AlertType)
+                }
             };
             var indication = new IndicationType
             {
@@ -336,42 +343,55 @@ namespace BriefCamMrsSensor.Models
         public static DeviceStatusReport CreateStatusReport(Camera[] cameras)
         {
             string[] siteNames = cameras.Select(c => c.SiteName).Distinct().ToArray();
-            Dictionary<string, Camera[]> camerasBySite = new Dictionary<string, Camera[]>();
+            var camerasBySite = new Dictionary<string, Camera[]>();
             foreach (var site in siteNames)
             {
                 camerasBySite.Add(site, cameras.Where(c => c.SiteName == site).ToArray());
             }
 
-            List<DeviceStatusReport> subStatusReports = new List<DeviceStatusReport>();
+            var subStatusReports = new List<object>();
             foreach (var cameraSite in camerasBySite)
             {
+                var deviceId = new DeviceIdentificationType
+                {
+                    DeviceName = cameraSite.Key,
+                    DeviceType = DeviceTypeType.CameraNetworkSystem
+                };
                 var deviceStatus = new DeviceStatusReport
                 {
-                    DeviceIdentification = new DeviceIdentificationType
-                    {
-                        DeviceName = cameraSite.Key,
-                        DeviceType = DeviceTypeType.CameraNetworkSystem
-                    }
+                    DeviceIdentification = deviceId
                 };
-                List<SensorStatusReport> sensors = new List<SensorStatusReport>();
+                var sensors = new List<object>();
                 foreach (var camera in cameraSite.Value)
                 {
+                    var sensorId = new SensorIdentificationType
+                    {
+                        SensorType = SensorTypeType.StaringCamera,
+                        SensorName = camera.CameraName
+                    };
                     sensors.Add(new SensorStatusReport
                     {
-                        SensorIdentification = new SensorIdentificationType
-                        {
-                            SensorType = SensorTypeType.StaringCamera,
-                            SensorName = camera.CameraName
-                        },
+                        SensorIdentification = sensorId,
                         CommunicationState = ConvertCameraStatus(camera.CameraStatus),
                         PowerState = camera.CameraStatus == CameraStatus.Ok ? StatusType.Yes : StatusType.No,
                         SensorTechnicalState = ConvertCameraStatus(camera.CameraStatus),
                         SensorMode = SensorModeType.Normal
                     });
+                    sensors.Add(new DetailedSensorBITType
+                    {
+                        SensorIdentification = sensorId,
+                        FaultCode = new string[0]
+                    });
                 }
+
+                var deviceBit = new DetailedDeviceBIT
+                {
+                    DeviceIdentification = deviceId
+                };
 
                 deviceStatus.Items = sensors.ToArray();
                 subStatusReports.Add(deviceStatus);
+                subStatusReports.Add(deviceBit);
             }
 
             return new DeviceStatusReport
