@@ -36,8 +36,8 @@ namespace BriefCamMrsSensor.Models
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            Cameras?.Invoke(this, CreateCameras());
             Alert?.Invoke(this, CreateAlert());
+            Cameras?.Invoke(this, CreateCameras());
             Thread.Sleep(1000);
             Image?.Invoke(this, CreateImage());
         }

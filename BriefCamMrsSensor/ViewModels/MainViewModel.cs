@@ -47,6 +47,7 @@ namespace BriefCamMrsSensor.ViewModels
         private readonly string _configPath = AppDomain.CurrentDomain.BaseDirectory + "Configuration.xml";
         private readonly string _statusPath = AppDomain.CurrentDomain.BaseDirectory + "StatusReport.xml";
         private Sensor _cameraSensor;
+        private readonly object _syncToken = new object();
 
         #endregion
 
@@ -196,10 +197,11 @@ namespace BriefCamMrsSensor.ViewModels
             Environment.Exit(0);
         }
 
-        private void StartBriefCamClient()
+        private void StartBriefCam()
         {
             _briefCamAction = () =>
             {
+                _alertsData.Clear();
                 _breifCamServer?.Stop();
                 _breifCamServer = new BriefCamServer(BriefCamServerIP, BriefCamServerPort, BriefCamServerLog);
                 _breifCamServer.AlertReceived += BreifCamServerOnAlertReceived;
@@ -328,13 +330,12 @@ namespace BriefCamMrsSensor.ViewModels
             }
             else
             {
-                _alertsData.Add(e.AlertID,
-                    _alertsData[e.AlertID] = new AlertData
-                    {
-                        Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
-                        AlertType = e.AlertType,
-                        AlertObject = e.AlertObject
-                    });
+                _alertsData.Add(e.AlertID, new AlertData
+                {
+                    Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                    AlertType = e.AlertType,
+                    AlertObject = e.AlertObject
+                });
             }
             _logger.Warn("BriefCam Server: Alert Received");
             WriteBriefCamLog("Alert Received", e.ToJson(), true);
@@ -347,7 +348,11 @@ namespace BriefCamMrsSensor.ViewModels
 
         private void StopBriefCamClient()
         {
-            _breifCamServer?.Stop();
+            if (_breifCamServer != null)
+            {
+                _breifCamServer.Stop();
+                WriteBriefCamLog("BriefCam Server Stopped");
+            }
         }
 
         private void StartSensor()
@@ -619,31 +624,33 @@ namespace BriefCamMrsSensor.ViewModels
             }
             else
             {
-                WriteBriefCamLog("Simulator: Image ignored, Unknown Image ID", e.ToJson());
+                WriteBriefCamLog("Simulator: Image ignored, Unknown Image ID", e.ToJson(), true);
             }
         }
 
         private void Simulator_Alert(object sender, Alert e)
         {
             _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertAlert(e));
-            if (_alertsData.ContainsKey(e.AlertID))
+            lock (_syncToken)
             {
-                _alertsData[e.AlertID] = new AlertData
+                if (_alertsData.ContainsKey(e.AlertID))
                 {
-                    Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
-                    AlertType = e.AlertType,
-                    AlertObject = e.AlertObject
-                };
-            }
-            else
-            {
-                _alertsData.Add(e.AlertID,
                     _alertsData[e.AlertID] = new AlertData
                     {
                         Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
                         AlertType = e.AlertType,
                         AlertObject = e.AlertObject
+                    };
+                }
+                else
+                {
+                    _alertsData.Add(e.AlertID, new AlertData
+                    {
+                        Location = MrsBriefCamHelper.CreateMrsPoint(e.Latitude, e.Longitude),
+                        AlertType = e.AlertType,
+                        AlertObject = e.AlertObject
                     });
+                }
             }
 
             WriteBriefCamLog("Simulator: Alert Received", e.ToJson(), true);
@@ -673,6 +680,7 @@ namespace BriefCamMrsSensor.ViewModels
                         _cameraSensor.OpenWebService();
                     };
                     message = "Camera Sensor Web Service Opened";
+                    IsThinking = true;
                 }
                 else
                 {
@@ -684,11 +692,11 @@ namespace BriefCamMrsSensor.ViewModels
                         _cameraSensor.SendFullDeviceStatusReport();
                     };
                     message = "Camera Sensor Status Updated";
+                    IsThinking = true;
                 }
             }
 
-            IsThinking = true;
-            _cameraSensorAction.BeginInvoke(CameraSensorCallback, message);
+            _cameraSensorAction?.BeginInvoke(CameraSensorCallback, message);
         }
 
         private void StopSimulator()
@@ -699,6 +707,7 @@ namespace BriefCamMrsSensor.ViewModels
 
         private void StartSimulator()
         {
+            _alertsData.Clear();
             _simulator.Start();
             IsSimActive = _simulator.IsActive;
         }
@@ -712,7 +721,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             LoadedCommand = new Command(LoadApp);
             ClosedCommand = new Command(CloseApp);
-            StartBriefCamCommand = new Command(StartBriefCamClient, () => ValidateIpEndpoint(BriefCamServerIP, BriefCamServerPort));
+            StartBriefCamCommand = new Command(StartBriefCam, () => ValidateIpEndpoint(BriefCamServerIP, BriefCamServerPort));
             StopBriefCamCommand = new Command(StopBriefCamClient);
             StartSensorCommand = new Command(StartSensor, () => ValidateIpEndpoint(SensorIP, SensorPort));
             StopSensorCommand = new Command(StopSensor);
