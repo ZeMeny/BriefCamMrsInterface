@@ -44,7 +44,7 @@ namespace BriefCamInterface.DataTypes
         public string EvidenceSquare { get; set; }
         public int LoiteringTime { get; set; }
         public string RuleDescription { get; set; }
-        public int Confidence { get; set; }
+        public double Confidence { get; set; }
         public int Speed { get; set; }
         public string AlertDescription { get; set; }
         public object Evidences { get; set; }

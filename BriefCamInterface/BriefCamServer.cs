@@ -8,7 +8,7 @@ using SimpleHttpServer.Models;
 
 namespace BriefCamInterface
 {
-	public class BriefCamServer
+	public class BriefCamServer : IBriefCamServer
 	{
 		#region / / / / /  Private fields  / / / / /
 
@@ -107,14 +107,6 @@ namespace BriefCamInterface
 		{
 			try
 			{
-				if (request.Method.ToUpper() == "GET")
-				{
-					return new HttpResponse
-					{
-						StatusCode = HttpStatusCode.Ok,
-						ContentAsUTF8 = "Hello :)"
-					};
-				}
 				if (request.Method.ToUpper() != "POST")
 				{
 					return new HttpResponse
@@ -130,8 +122,17 @@ namespace BriefCamInterface
 						StatusCode = HttpStatusCode.BadRequest
 					};
 				}
-				Alert alert = JsonConvert.DeserializeObject<Alert>(request.Content);
-				AlertReceived?.Invoke(this, alert);
+
+				try
+				{
+					Alert alert = JsonConvert.DeserializeObject<Alert>(request.Content);
+					AlertReceived?.Invoke(this, alert);
+				}
+				catch (JsonException)
+				{
+					Alert[] alerts = JsonConvert.DeserializeObject<Alert[]>(request.Content);
+					AlertReceived?.Invoke(this, alerts[0]);
+				}
 
 				return new HttpResponse
 				{
@@ -174,13 +175,6 @@ namespace BriefCamInterface
 					Callable = AlertHandler,
 					Name = "Alert Hanlder",
 					Method = "POST",
-					UrlRegex = @"^/alerts$"
-				},
-				new Route
-				{
-					Callable = AlertHandler,
-					Name = "Alert Hanlder",
-					Method = "GET",
 					UrlRegex = @"^/alerts$"
 				},
 				new Route

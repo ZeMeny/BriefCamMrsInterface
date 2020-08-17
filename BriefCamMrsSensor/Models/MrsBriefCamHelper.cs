@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using BriefCamInterface.DataTypes;
-using BriefCamMrsSensor.ViewModels;
 using Newtonsoft.Json;
 using SensorStandard.MrsTypes;
 
@@ -182,43 +181,59 @@ namespace BriefCamMrsSensor.Models
 
         public static IndicationType ConvertImage(Image image, AlertData alertData)
         {
-            List<File> imageFiles = new List<File>();
+            List<ImageFile> imageFiles = new List<ImageFile>();
             if (image.Image1 != null)
             {
-                imageFiles.Add(new File
+                imageFiles.Add(new ImageFile
                 {
-                    File1 = image.Image1,
-                    ItemElementName = ItemChoiceType3.NameJPEG,
+                    File = image.Image1,
+                    CreationTime = new TimeType
+                    {
+                        Zone = TimezoneType.GMT,
+                        Value = DateTime.Now
+                    },
                     Item = "image1.jpg"
                 });
             }
             if (image.Image2 != null)
             {
-                imageFiles.Add(new File
+                imageFiles.Add(new ImageFile
                 {
-                    File1 = image.Image2,
-                    ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "image2.jpg"
+                    File = image.Image2,
+                    Item = "image2.jpg",
+                    CreationTime = new TimeType
+                    {
+                        Zone = TimezoneType.GMT,
+                        Value = DateTime.Now
+                    }
                 });
             }
             if (image.Image3 != null)
             {
-                imageFiles.Add(new File
+                imageFiles.Add(new ImageFile
                 {
-                    File1 = image.Image3,
-                    ItemElementName = ItemChoiceType3.NameJPEG,
-                    Item = "image3.jpg"
+                    File = image.Image3,
+                    Item = "image3.jpg",
+                    CreationTime = new TimeType
+                    {
+                        Zone = TimezoneType.GMT,
+                        Value = DateTime.Now
+                    }
                 });
             }
 
-            List<File> videoFiles = new List<File>();
+            List<VideoFile> videoFiles = new List<VideoFile>();
             if (image.VideoClip != null)
             {
-                videoFiles.Add(new File
+                videoFiles.Add(new VideoFile
                 {
-                    File1 = image.VideoClip,
-                    ItemElementName = ItemChoiceType3.NameMP4,
-                    Item = "videoClip.mp4"
+                    File = image.VideoClip,
+                    Item = "videoClip.mp4",
+                    CreationTime = new TimeType
+                    {
+                        Zone = TimezoneType.GMT,
+                        Value = DateTime.Now
+                    }
                 });
             }
             var detection = new VideoAnalyticDetectionType
@@ -490,22 +505,22 @@ namespace BriefCamMrsSensor.Models
             }
         }
 
-        private static LicensePlateType ConvertLicenseType(LicenseTypes licenseType)
+        private static LicenseType ConvertLicenseType(LicenseTypes licenseType)
         {
             switch (licenseType)
             {
                 case LicenseTypes.Israeli:
-                    return LicensePlateType.Israeli;
+                    return LicenseType.Israeli;
                 case LicenseTypes.Palestinian:
-                    return LicensePlateType.Palestinian;
+                    return LicenseType.Palestinian;
                 case LicenseTypes.Diplomat:
-                    return LicensePlateType.Diplomat;
+                    return LicenseType.Diplomat;
                 case LicenseTypes.Army:
-                    return LicensePlateType.Military;
+                    return LicenseType.Military;
                 case LicenseTypes.Police:
-                    return LicensePlateType.Police;
+                    return LicenseType.Police;
                 default:
-                    return LicensePlateType.Undefined;
+                    return LicenseType.Undefined;
             }
         }
 

@@ -17,7 +17,7 @@ namespace BriefCamInterface.DataTypes
         public string LprSource { get; set; }
 
         [JsonProperty(PropertyName = "lprCameraId")]
-        public int LprCameraID { get; set; }
+        public string LprCameraID { get; set; }
 
         [JsonProperty(PropertyName = "cameraName")]
         public string CameraName { get; set; }

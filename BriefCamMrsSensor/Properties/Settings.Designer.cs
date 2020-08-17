@@ -166,5 +166,17 @@ namespace BriefCamMrsSensor.Properties {
                 this["CameraSensorPort"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SimpleServer {
+            get {
+                return ((bool)(this["SimpleServer"]));
+            }
+            set {
+                this["SimpleServer"] = value;
+            }
+        }
     }
 }

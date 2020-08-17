@@ -39,7 +39,7 @@ namespace BriefCamMrsSensor.ViewModels
         private Action _cameraSensorAction;
         private bool _validate = true;
         private readonly ILog _logger = LogManager.GetLogger(typeof(MainViewModel));
-        private BriefCamServer _breifCamServer;
+        private IBriefCamServer _breifCamServer;
         private Sensor _indicationSensor;
         private readonly Dictionary<string, AlertData> _alertsData = new Dictionary<string, AlertData>();
         private readonly BriefcamSimulator _simulator;
@@ -203,7 +203,14 @@ namespace BriefCamMrsSensor.ViewModels
             {
                 _alertsData.Clear();
                 _breifCamServer?.Stop();
-                _breifCamServer = new BriefCamServer(BriefCamServerIP, BriefCamServerPort, BriefCamServerLog);
+                if (Settings.Default.SimpleServer)
+                {
+                    _breifCamServer = new BriefCamServer(BriefCamServerIP, BriefCamServerPort, BriefCamServerLog);
+                }
+                else
+                {
+                    _breifCamServer = new BriefCamServer2(BriefCamServerIP, BriefCamServerPort, BriefCamServerLog);
+                }
                 _breifCamServer.AlertReceived += BreifCamServerOnAlertReceived;
                 _breifCamServer.ImageReceived += BreifCamServerOnImageReceived;
                 _breifCamServer.CameraReceived += BreifCamServerOnCameraReceived;
@@ -223,30 +230,38 @@ namespace BriefCamMrsSensor.ViewModels
             config.NotificationServiceIPAddress = SensorIP;
             config.NotificationServicePort = CameraSensorPort.ToString();
 
-            _cameraSensorAction = () =>
+            string message = "";
+
+            if (_indicationSensor != null && _indicationSensor.IsOpen)
             {
-                if (_indicationSensor != null && _indicationSensor.IsOpen)
+                if (_cameraSensor == null)
                 {
-                    if (_cameraSensor == null)
+                    _cameraSensorAction = () =>
                     {
                         _cameraSensor = new Sensor(config, status);
                         _cameraSensor.MessageReceived += CameraSensorOnMessageReceived;
                         _cameraSensor.MessageSent += CameraSensorOnMessageSent;
                         _cameraSensor.ValidateMessages = ValidateMessages;
                         _cameraSensor.OpenWebService();
-                    }
-                    else
+                    };
+                    message = "Camera Sensor Web Service Opened";
+                    IsThinking = true;
+                }
+                else
+                {
+                    _cameraSensorAction = () =>
                     {
                         _cameraSensor.DeviceConfiguration = config;
                         _cameraSensor.StatusReport = status;
                         // notify clients
                         _cameraSensor.SendFullDeviceStatusReport();
-                    } 
+                    };
+                    message = "Camera Sensor Status Updated";
+                    IsThinking = true;
                 }
+            }
 
-                IsThinking = true;
-            };
-            _cameraSensorAction.BeginInvoke(CameraSensorCallback, null);
+            _cameraSensorAction?.BeginInvoke(CameraSensorCallback, message);
         }
 
         private void CameraSensorCallback(IAsyncResult ar)
@@ -258,7 +273,7 @@ namespace BriefCamMrsSensor.ViewModels
                 {
                     try
                     {
-                        string message = ar.AsyncState.ToString();
+                        string message = ar.AsyncState?.ToString();
                         caller?.EndInvoke(res);
                         if (_cameraSensor.IsOpen)
                         {
