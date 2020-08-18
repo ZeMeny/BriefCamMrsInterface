@@ -14,6 +14,6 @@ namespace BriefCamInterface
 
         event EventHandler<Alert> AlertReceived;
         event EventHandler<Image> ImageReceived;
-        event EventHandler<Camera[]> CameraReceived;
+        event EventHandler<CameraTree> CameraReceived;
     }
 }

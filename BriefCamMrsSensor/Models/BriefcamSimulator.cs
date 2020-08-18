@@ -109,81 +109,84 @@ namespace BriefCamMrsSensor.Models
             }
         }
 
-        private Camera[] CreateCameras()
+        private CameraTree CreateCameras()
         {
-            var cameras = new[]
+            var tree = new CameraTree
             {
-                new Camera
+                Cameras = new[]
                 {
-                    CameraName = "Camera1",
-                    SiteName = "Site1",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera2",
-                    SiteName = "Site1",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera3",
-                    SiteName = "Site1",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera1",
-                    SiteName = "Site2",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera2",
-                    SiteName = "Site2",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera3",
-                    SiteName = "Site2",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera1",
-                    SiteName = "Site3",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera2",
-                    SiteName = "Site3",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
-                },
-                new Camera
-                {
-                    CameraName = "Camera3",
-                    SiteName = "Site3",
-                    CameraStatus = CameraStatus.Ok,
-                    Longtitude = 34.5,
-                    Latitude = 32.5
+                    new Camera
+                    {
+                        CameraName = "Camera1",
+                        SiteName = "Site1",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera2",
+                        SiteName = "Site1",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera3",
+                        SiteName = "Site1",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera1",
+                        SiteName = "Site2",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera2",
+                        SiteName = "Site2",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera3",
+                        SiteName = "Site2",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera1",
+                        SiteName = "Site3",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera2",
+                        SiteName = "Site3",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    },
+                    new Camera
+                    {
+                        CameraName = "Camera3",
+                        SiteName = "Site3",
+                        CameraStatus = CameraStatus.Ok,
+                        Longitude = 34.5,
+                        Latitude = 32.5
+                    }
                 }
             };
 
@@ -193,16 +196,16 @@ namespace BriefCamMrsSensor.Models
                 {
                     lock (this)
                     {
-                        return JsonConvert.DeserializeObject<Camera[]>(File.ReadAllText(_camerasJsonPath)); 
+                        return JsonConvert.DeserializeObject<CameraTree>(File.ReadAllText(_camerasJsonPath)); 
                     }
                 }
                 catch
                 {
-                    return cameras;
+                    return tree;
                 }
             }
 
-            return cameras;
+            return tree;
         }
 
         #endregion
@@ -235,7 +238,7 @@ namespace BriefCamMrsSensor.Models
 
         public event EventHandler<Alert> Alert;
         public event EventHandler<Image> Image;
-        public event EventHandler<Camera[]> Cameras;
+        public event EventHandler<CameraTree> Cameras;
 
         #endregion
     }

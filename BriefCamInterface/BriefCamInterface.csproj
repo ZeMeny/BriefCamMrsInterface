@@ -75,6 +75,7 @@
     <Compile Include="DataTypes\AlertStatusTypes.cs" />
     <Compile Include="DataTypes\AlertTypes.cs" />
     <Compile Include="DataTypes\Camera.cs" />
+    <Compile Include="DataTypes\CameraTree.cs" />
     <Compile Include="DataTypes\CameraStatus.cs" />
     <Compile Include="DataTypes\CameraTypes.cs" />
     <Compile Include="DataTypes\CarTypes.cs" />

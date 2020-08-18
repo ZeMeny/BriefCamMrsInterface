@@ -140,18 +140,18 @@
             </ScrollViewer>
         </Border>
         <Button Content="Clear" 
-                Margin="161,10.4,0,6.4" 
+                Margin="0,0,0,6.4" 
                 Grid.Row="2" 
-                Height="Auto" Width="75"
-                HorizontalAlignment="Left" 
-                Command="{Binding ClearBriefCamLogCommand}"/>
+                Height="32" Width="75"
+                HorizontalAlignment="Center" 
+                Command="{Binding ClearBriefCamLogCommand}" VerticalAlignment="Bottom"/>
         <Button Content="Clear" 
-                Margin="0,10.4,160.6,6.4" 
+                Margin="0,0,0,6.4" 
                 Grid.Row="2" 
                 Grid.Column="1" 
-                Height="Auto" Width="75"
-                HorizontalAlignment="Right"
-                Command="{Binding ClearSensorLogCommand}"/>
+                Height="32" Width="75"
+                HorizontalAlignment="Center"
+                Command="{Binding ClearSensorLogCommand}" VerticalAlignment="Bottom"/>
         <CheckBox Content="Validate Messages" 
                   IsChecked="{Binding ValidateMessages, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   Grid.Column="1" 
@@ -168,11 +168,11 @@
                 <Style TargetType="TextBlock">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsSimActive}" Value="True">
-                            <Setter Property="Text" Value="Enabled"/>
+                            <Setter Property="Text" Value="On"/>
                             <Setter Property="Foreground" Value="ForestGreen"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsSimActive}" Value="False">
-                            <Setter Property="Text" Value="Disabled"/>
+                            <Setter Property="Text" Value="Off"/>
                             <Setter Property="Foreground" Value="Red"/>
                         </DataTrigger>
                     </Style.Triggers>

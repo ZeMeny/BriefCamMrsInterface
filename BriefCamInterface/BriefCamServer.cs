@@ -48,8 +48,8 @@ namespace BriefCamInterface
 						StatusCode = HttpStatusCode.BadRequest
 					};
 				}
-				Camera[] camera = JsonConvert.DeserializeObject<Camera[]>(request.Content);
-				CameraReceived?.Invoke(this, camera);
+				CameraTree cameraTree = JsonConvert.DeserializeObject<CameraTree>(request.Content);
+				CameraReceived?.Invoke(this, cameraTree);
 
 				return new HttpResponse
 				{
@@ -208,7 +208,7 @@ namespace BriefCamInterface
 
 		public event EventHandler<Alert> AlertReceived;
 		public event EventHandler<Image> ImageReceived;
-		public event EventHandler<Camera[]> CameraReceived;
+		public event EventHandler<CameraTree> CameraReceived;
 
 		#endregion
 	}

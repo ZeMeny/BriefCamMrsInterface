@@ -220,7 +220,7 @@ namespace BriefCamMrsSensor.ViewModels
             _briefCamAction.BeginInvoke(BriefCamCallback, null);
         }
 
-        private void BreifCamServerOnCameraReceived(object sender, Camera[] e)
+        private void BreifCamServerOnCameraReceived(object sender, CameraTree e)
         {
             _logger.Warn("BriefCam Server: Camera Tree Received");
             WriteBriefCamLog("Camera Tree Received", e.ToJson(), true);
@@ -322,12 +322,12 @@ namespace BriefCamMrsSensor.ViewModels
             {
                 _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, _alertsData[e.AlertID]));
                 _logger.Info("BriefCam Server: Image Received");
-                WriteBriefCamLog("Image Received", e.ToJson());
+                WriteBriefCamLog($"Image Received ({e.AlertID})", e.ToJson());
             }
             else
             {
                 _logger.Warn("BriefCam Server: Image ignored, Unknown Image ID");
-                WriteBriefCamLog("Image ignored, Unknown Image ID", e.ToJson());
+                WriteBriefCamLog($"Image ignored, Unknown Image ID ({e.AlertID})", e.ToJson());
             }
         }
 
@@ -353,7 +353,7 @@ namespace BriefCamMrsSensor.ViewModels
                 });
             }
             _logger.Warn("BriefCam Server: Alert Received");
-            WriteBriefCamLog("Alert Received", e.ToJson(), true);
+            WriteBriefCamLog($"Alert Received ({e.AlertID})", e.ToJson(), true);
         }
 
         private void BriefCamServerLog(string message)
@@ -541,7 +541,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                ListViewItem item = new ListViewItem()
+                ListViewItem item = new ListViewItem
                 {
                     Content = $"{DateTime.Now.ToLongTimeString()} - {header}",
                 };
@@ -551,11 +551,13 @@ namespace BriefCamMrsSensor.ViewModels
                     {
                         LogItemWindow itemWindow = new LogItemWindow(content);
                         itemWindow.Show();
+                        itemWindow.Activate();
                     }
                     else
                     {
                         LogItemWindow itemWindow = new LogItemWindow(header);
                         itemWindow.Show();
+                        itemWindow.Activate();
                     }
                 };
                 if (isAlarm)
@@ -576,7 +578,7 @@ namespace BriefCamMrsSensor.ViewModels
         {
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                ListViewItem item = new ListViewItem()
+                ListViewItem item = new ListViewItem
                 {
                     Content = $"{DateTime.Now.ToLongTimeString()} - {header}",
                 };
@@ -586,11 +588,13 @@ namespace BriefCamMrsSensor.ViewModels
                     {
                         LogItemWindow itemWindow = new LogItemWindow(content);
                         itemWindow.Show();
+                        itemWindow.Activate();
                     }
                     else
                     {
                         LogItemWindow itemWindow = new LogItemWindow(header);
                         itemWindow.Show();
+                        itemWindow.Activate();
                     }
                 };
                 if (isAlarm)
@@ -635,11 +639,11 @@ namespace BriefCamMrsSensor.ViewModels
             if (_alertsData.ContainsKey(e.AlertID))
             {
                 _indicationSensor?.SendIndicationReport(MrsBriefCamHelper.ConvertImage(e, _alertsData[e.AlertID]));
-                WriteBriefCamLog("Simulator: Image Received", e.ToJson());
+                WriteBriefCamLog($"Simulator: Image Received ({e.AlertID})", e.ToJson());
             }
             else
             {
-                WriteBriefCamLog("Simulator: Image ignored, Unknown Image ID", e.ToJson(), true);
+                WriteBriefCamLog($"Simulator: Image ignored, Unknown Image ID ({e.AlertID})", e.ToJson(), true);
             }
         }
 
@@ -668,10 +672,10 @@ namespace BriefCamMrsSensor.ViewModels
                 }
             }
 
-            WriteBriefCamLog("Simulator: Alert Received", e.ToJson(), true);
+            WriteBriefCamLog($"Simulator: Alert Received ({e.AlertID})", e.ToJson(), true);
         }
 
-        private void SimulatorOnCameras(object sender, Camera[] e)
+        private void SimulatorOnCameras(object sender, CameraTree e)
         {
             WriteBriefCamLog("Simulator: Camera Tree Received", e.ToJson(), true);
 

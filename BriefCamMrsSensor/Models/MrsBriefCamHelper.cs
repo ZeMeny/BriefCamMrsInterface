@@ -306,13 +306,13 @@ namespace BriefCamMrsSensor.Models
             };
         }
 
-        public static DeviceConfiguration CreateConfiguration(Camera[] cameras)
+        public static DeviceConfiguration CreateConfiguration(CameraTree cameraTree)
         {
-            string[] siteNames = cameras.Select(c => c.SiteName).Distinct().ToArray();
+            string[] siteNames = cameraTree.Cameras.Select(c => c.SiteName).Distinct().ToArray();
             Dictionary<string, Camera[]> camerasBySite = new Dictionary<string, Camera[]>();
             foreach (var site in siteNames)
             {
-                camerasBySite.Add(site, cameras.Where(c=>c.SiteName == site).ToArray());
+                camerasBySite.Add(site, cameraTree.Cameras.Where(c=>c.SiteName == site).ToArray());
             }
 
             List<DeviceConfiguration> subConfigs = new List<DeviceConfiguration>();
@@ -336,7 +336,7 @@ namespace BriefCamMrsSensor.Models
                             SensorType = SensorTypeType.StaringCamera,
                             SensorName = camera.CameraName
                         },
-                        LocationType = CreateMarsLocation(camera.Latitude, camera.Longtitude)
+                        LocationType = CreateMarsLocation(camera.Latitude, camera.Longitude)
                     });
                 }
 
@@ -355,13 +355,13 @@ namespace BriefCamMrsSensor.Models
             };
         }
 
-        public static DeviceStatusReport CreateStatusReport(Camera[] cameras)
+        public static DeviceStatusReport CreateStatusReport(CameraTree cameraTree)
         {
-            string[] siteNames = cameras.Select(c => c.SiteName).Distinct().ToArray();
+            string[] siteNames = cameraTree.Cameras.Select(c => c.SiteName).Distinct().ToArray();
             var camerasBySite = new Dictionary<string, Camera[]>();
             foreach (var site in siteNames)
             {
-                camerasBySite.Add(site, cameras.Where(c => c.SiteName == site).ToArray());
+                camerasBySite.Add(site, cameraTree.Cameras.Where(c => c.SiteName == site).ToArray());
             }
 
             var subStatusReports = new List<object>();

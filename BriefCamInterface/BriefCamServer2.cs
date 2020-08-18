@@ -115,7 +115,7 @@ namespace BriefCamInterface
 				}
 				else
 				{
-					Camera[] cameras = JsonConvert.DeserializeObject<Camera[]>(content);
+					CameraTree cameras = JsonConvert.DeserializeObject<CameraTree>(content);
 					CameraReceived?.BeginInvoke(this, cameras, null, null);
 				}
 			}
@@ -181,7 +181,7 @@ namespace BriefCamInterface
 
 		public event EventHandler<Alert> AlertReceived;
 		public event EventHandler<Image> ImageReceived;
-		public event EventHandler<Camera[]> CameraReceived;
+		public event EventHandler<CameraTree> CameraReceived;
 
 		#endregion
 	}

@@ -28,8 +28,8 @@ namespace BriefCamInterface.DataTypes
         [JsonProperty(PropertyName = "cameraIP")]
         public string CameraIP { get; set; }
 
-        [JsonProperty(PropertyName = "longtitude")]
-        public double Longtitude { get; set; }
+        [JsonProperty(PropertyName = "longitude")]
+        public double Longitude { get; set; }
 
         [JsonProperty(PropertyName = "latitude")]
         public double Latitude { get; set; }
